@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "2.1.0"
@@ -13,14 +15,14 @@ repositories {
 
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.2.5")
-    type.set("IC") // Target IDE Platform
+//    version.set("2022.2.5")
+//    type.set("IC") // Target IDE Platform
     
     // Use a persistent sandbox directory
-    sandboxDir.set("${rootProject.projectDir}/sandbox")
+//    sandboxDir.set("${rootProject.projectDir}/sandbox")
     
     // Alternatively, use your local IDE installation
-    // localPath.set("/Applications/IntelliJ IDEA.app/Contents")
+     localPath.set("/Applications/IntelliJ IDEA.app/Contents")
 
     plugins.set(listOf(/* Plugin Dependencies */))
 }
@@ -32,12 +34,13 @@ tasks {
         targetCompatibility = "17"
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions.jvmTarget.set(JVM_17)
+
     }
 
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("232.*")
+        untilBuild.set("252.*")
     }
 
     signPlugin {
