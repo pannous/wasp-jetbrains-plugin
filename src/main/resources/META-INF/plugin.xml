@@ -39,5 +39,9 @@
         <!-- Syntax highlighter -->
         <lang.syntaxHighlighterFactory language="Wasp" 
                                        implementationClass="com.pannous.wasp.WaspSyntaxHighlighterFactory"/>
+        
+        <!-- Code folding -->
+        <lang.foldingBuilder language="Wasp" 
+                             implementationClass="com.pannous.wasp.WaspFoldingBuilder"/>
     </extensions>
 </idea-plugin>
