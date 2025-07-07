@@ -15,13 +15,17 @@ class WaspLexer : LexerBase() {
     private var tokenType: IElementType? = null
 
     companion object {
-        private val KEYWORDS = setOf(
-            "if", "else", "elif", "for", "while", "in", "not", "and", "or",
-            "def", "class", "return", "import", "from", "as", "pass", "break", "continue",
-            "try", "except", "finally", "raise", "with", "yield", "lambda", "global", "nonlocal",
-            "True", "False", "None", "is", "assert", "del"
-        )
-        
+        // @formatter:off
+        // or use custom line breaks aka manual enters like here
+        // @formatter:on
+
+        private val KEYWORDS = setOf("if", "else", "elif", "for", "while", "in", "not",
+            "and", "or", "def", "class", "return", "import", "use", "from", "as", "pass",
+            "break", "continue", "try", "except", "finally", "raise", "with", "yield",
+            "lambda", "global", "True", "False", "None", "nil", "null", "is", "assert",
+            "del", "fun", "in", "on", "of", "to", "with", "while", "it", "that", "which",
+            "type", "id")
+
         private val OPERATORS = setOf(
             "+", "-", "*", "/", "//", "%", "**", "=", "==", "!=", "<", ">", "<=", ">=",
             "<<", ">>", "&", "|", "^", "~", "+=", "-=", "*=", "/=", "//=", "%=", "**=",
@@ -52,14 +56,17 @@ class WaspLexer : LexerBase() {
                 skipWhitespace()
                 tokenType = TokenType.WHITE_SPACE
             }
+
             '\n', '\r' -> {
                 skipNewline()
                 tokenType = Token.NEWLINE
             }
+
             '#' -> {
                 skipHashComment()
                 tokenType = Token.COMMENT
             }
+
             '/' -> {
                 if (position + 1 < end) {
                     when (buffer[position + 1]) {
@@ -67,10 +74,12 @@ class WaspLexer : LexerBase() {
                             skipSingleLineComment()
                             tokenType = Token.COMMENT
                         }
+
                         '*' -> {
                             skipMultiLineComment()
                             tokenType = Token.COMMENT
                         }
+
                         else -> {
                             if (skipOperator()) {
                                 tokenType = Token.OPERATOR
@@ -91,64 +100,77 @@ class WaspLexer : LexerBase() {
                     }
                 }
             }
-            '"', '\'' -> {
+
+            '"', '\'', '`', '“', '‘' -> { // todo closing , '«'
                 skipString(char)
                 tokenType = Token.STRING
             }
+
             '{' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.LBRACE
             }
+
             '}' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.RBRACE
             }
+
             '(' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.LPAREN
             }
+
             ')' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.RPAREN
             }
+
             '[' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.LBRACKET
             }
+
             ']' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.RBRACKET
             }
+
             ',' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.COMMA
             }
+
             ':' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.COLON
             }
+
             ';' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.SEMICOLON
             }
+
             '.' -> {
                 position++
                 tokenEnd = position
                 tokenType = Token.DOT
             }
+
             in '0'..'9' -> {
                 skipNumber()
                 tokenType = Token.NUMBER
             }
+
             in 'a'..'z', in 'A'..'Z', '_' -> {
                 skipIdentifier()
                 val text = buffer.subSequence(tokenStart, tokenEnd).toString()
@@ -158,6 +180,7 @@ class WaspLexer : LexerBase() {
                     Token.IDENTIFIER
                 }
             }
+
             else -> {
                 if (skipOperator()) {
                     tokenType = Token.OPERATOR
@@ -232,7 +255,7 @@ class WaspLexer : LexerBase() {
     }
 
     private fun skipNumber() {
-        while (position < end && (buffer[position].isDigit() || buffer[position] == '.')) {
+        while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
         tokenEnd = position
@@ -249,7 +272,7 @@ class WaspLexer : LexerBase() {
         val remainingBuffer = buffer.subSequence(position, end).toString()
         val longestMatch = OPERATORS.filter { remainingBuffer.startsWith(it) }
             .maxByOrNull { it.length }
-        
+
         return if (longestMatch != null) {
             position += longestMatch.length
             tokenEnd = position
