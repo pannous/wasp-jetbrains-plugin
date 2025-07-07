@@ -54,26 +54,26 @@ class WaspLexer : LexerBase() {
             }
             '\n', '\r' -> {
                 skipNewline()
-                tokenType = WaspTokenTypes.NEWLINE
+                tokenType = Token.NEWLINE
             }
             '#' -> {
                 skipHashComment()
-                tokenType = WaspTokenTypes.COMMENT
+                tokenType = Token.COMMENT
             }
             '/' -> {
                 if (position + 1 < end) {
                     when (buffer[position + 1]) {
                         '/' -> {
                             skipSingleLineComment()
-                            tokenType = WaspTokenTypes.COMMENT
+                            tokenType = Token.COMMENT
                         }
                         '*' -> {
                             skipMultiLineComment()
-                            tokenType = WaspTokenTypes.COMMENT
+                            tokenType = Token.COMMENT
                         }
                         else -> {
                             if (skipOperator()) {
-                                tokenType = WaspTokenTypes.OPERATOR
+                                tokenType = Token.OPERATOR
                             } else {
                                 position++
                                 tokenEnd = position
@@ -83,7 +83,7 @@ class WaspLexer : LexerBase() {
                     }
                 } else {
                     if (skipOperator()) {
-                        tokenType = WaspTokenTypes.OPERATOR
+                        tokenType = Token.OPERATOR
                     } else {
                         position++
                         tokenEnd = position
@@ -93,74 +93,74 @@ class WaspLexer : LexerBase() {
             }
             '"', '\'' -> {
                 skipString(char)
-                tokenType = WaspTokenTypes.STRING
+                tokenType = Token.STRING
             }
             '{' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.LBRACE
+                tokenType = Token.LBRACE
             }
             '}' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.RBRACE
+                tokenType = Token.RBRACE
             }
             '(' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.LPAREN
+                tokenType = Token.LPAREN
             }
             ')' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.RPAREN
+                tokenType = Token.RPAREN
             }
             '[' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.LBRACKET
+                tokenType = Token.LBRACKET
             }
             ']' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.RBRACKET
+                tokenType = Token.RBRACKET
             }
             ',' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.COMMA
+                tokenType = Token.COMMA
             }
             ':' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.COLON
+                tokenType = Token.COLON
             }
             ';' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.SEMICOLON
+                tokenType = Token.SEMICOLON
             }
             '.' -> {
                 position++
                 tokenEnd = position
-                tokenType = WaspTokenTypes.DOT
+                tokenType = Token.DOT
             }
             in '0'..'9' -> {
                 skipNumber()
-                tokenType = WaspTokenTypes.NUMBER
+                tokenType = Token.NUMBER
             }
             in 'a'..'z', in 'A'..'Z', '_' -> {
                 skipIdentifier()
                 val text = buffer.subSequence(tokenStart, tokenEnd).toString()
                 tokenType = if (KEYWORDS.contains(text)) {
-                    WaspTokenTypes.KEYWORD
+                    Token.KEYWORD
                 } else {
-                    WaspTokenTypes.IDENTIFIER
+                    Token.IDENTIFIER
                 }
             }
             else -> {
                 if (skipOperator()) {
-                    tokenType = WaspTokenTypes.OPERATOR
+                    tokenType = Token.OPERATOR
                 } else {
                     position++
                     tokenEnd = position

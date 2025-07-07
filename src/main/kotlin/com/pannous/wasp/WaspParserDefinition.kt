@@ -16,8 +16,8 @@ class WaspParserDefinition : ParserDefinition {
     
     companion object {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create(WaspTokenTypes.COMMENT)
-        val STRINGS = TokenSet.create(WaspTokenTypes.STRING)
+        val COMMENTS = TokenSet.create(Token.COMMENT)
+        val STRINGS = TokenSet.create(Token.STRING)
         val FILE = IFileElementType("WASP_FILE", WaspLanguage.INSTANCE)
     }
     

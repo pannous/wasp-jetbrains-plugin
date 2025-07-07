@@ -80,19 +80,19 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
     
     override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> {
         return when (tokenType) {
-            WaspTokenTypes.KEYWORD -> arrayOf(KEYWORD)
-            WaspTokenTypes.STRING -> arrayOf(STRING)
-            WaspTokenTypes.NUMBER -> arrayOf(NUMBER)
-            WaspTokenTypes.COMMENT -> arrayOf(COMMENT)
-            WaspTokenTypes.IDENTIFIER -> arrayOf(IDENTIFIER)
-            WaspTokenTypes.OPERATOR -> arrayOf(OPERATOR)
-            WaspTokenTypes.LBRACE, WaspTokenTypes.RBRACE -> arrayOf(BRACES)
-            WaspTokenTypes.LBRACKET, WaspTokenTypes.RBRACKET -> arrayOf(BRACKETS)
-            WaspTokenTypes.LPAREN, WaspTokenTypes.RPAREN -> arrayOf(PARENTHESES)
-            WaspTokenTypes.COMMA -> arrayOf(COMMA)
-            WaspTokenTypes.DOT -> arrayOf(DOT)
-            WaspTokenTypes.SEMICOLON -> arrayOf(SEMICOLON)
-            WaspTokenTypes.COLON -> arrayOf(COLON)
+            Token.KEYWORD -> arrayOf(KEYWORD)
+            Token.STRING -> arrayOf(STRING)
+            Token.NUMBER -> arrayOf(NUMBER)
+            Token.COMMENT -> arrayOf(COMMENT)
+            Token.IDENTIFIER -> arrayOf(IDENTIFIER)
+            Token.OPERATOR -> arrayOf(OPERATOR)
+            Token.LBRACE, Token.RBRACE -> arrayOf(BRACES)
+            Token.LBRACKET, Token.RBRACKET -> arrayOf(BRACKETS)
+            Token.LPAREN, Token.RPAREN -> arrayOf(PARENTHESES)
+            Token.COMMA -> arrayOf(COMMA)
+            Token.DOT -> arrayOf(DOT)
+            Token.SEMICOLON -> arrayOf(SEMICOLON)
+            Token.COLON -> arrayOf(COLON)
             TokenType.BAD_CHARACTER -> arrayOf(
                 TextAttributesKey.createTextAttributesKey(
                     "WASP_BAD_CHARACTER", 
