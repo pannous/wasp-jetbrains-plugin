@@ -18,6 +18,12 @@ repositories {
 intellij {
     version.set("2022.2.5")
     type.set("IC") // Target IDE Platform
+    
+    // Use a persistent sandbox directory
+    sandboxDir.set("${rootProject.projectDir}/sandbox")
+    
+    // Alternatively, use your local IDE installation
+    // localPath.set("/Applications/IntelliJ IDEA.app/Contents")
 
     plugins.set(listOf(/* Plugin Dependencies */))
 }
