@@ -1,9 +1,7 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.21"
+    id("org.jetbrains.kotlin.jvm") version "2.1.0"
     id("org.jetbrains.intellij") version "1.13.3"
-//    id("org.jetbrains.kotlin.jvm") version "latest"
-//    id("org.jetbrains.intellij") version "latest"
 }
 
 group = "com.pannous"
@@ -13,7 +11,6 @@ repositories {
     mavenCentral()
 }
 
-// Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2022.2.5")
