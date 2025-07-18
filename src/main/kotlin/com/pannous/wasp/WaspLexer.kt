@@ -19,17 +19,21 @@ class WaspLexer : LexerBase() {
         // or use custom line breaks aka manual enters like here
         // @formatter:on
 
-        private val KEYWORDS = setOf("if", "else", "elif", "for", "while", "in", "not",
+        private val TYPES = setOf("real","int")
+
+        private val KEYWORDS = setOf(
+            "if", "else", "elif", "for", "while", "in", "not",
             "and", "or", "def", "class", "return", "import", "use", "from", "as", "pass",
             "break", "continue", "try", "except", "finally", "raise", "with", "yield",
             "lambda", "global", "True", "False", "None", "nil", "null", "is", "assert",
             "del", "fun", "in", "on", "of", "to", "with", "while", "it", "that", "which",
-            "type", "id", "π", "τ")
+            "type", "id", "π", "τ"
+        )
 
         private val OPERATORS = setOf(
             "+", "-", "*", "/", "//", "%", "**", "=", "==", "!=", "<", ">", "<=", ">=",
             "<<", ">>", "&", "|", "^", "~", "+=", "-=", "*=", "/=", "//=", "%=", "**=",
-            "&=", "|=", "^=", "<<=", ">>=", "≈", "√","ʃ","×", "⁰","⁻¹","²","³","∈","∊"
+            "&=", "|=", "^=", "<<=", ">>=", "≈", "√", "ʃ", "×", "⁰", "⁻¹", "²", "³", "∈", "∊"
         )
     }
 
@@ -166,7 +170,7 @@ class WaspLexer : LexerBase() {
                 tokenType = Token.DOT
             }
 
-            in '0'..'9' -> {
+            in '0'..'9', 'π', 'τ' -> {
                 skipNumber()
                 tokenType = Token.NUMBER
             }
@@ -258,6 +262,10 @@ class WaspLexer : LexerBase() {
         while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
+        if (buffer[position] == 'f' || buffer[position] == 'l')  // todo … c - compatible
+            position++
+        if (buffer[position] == 'π' || buffer[position] == 'τ')
+            position++
         tokenEnd = position
     }
 
