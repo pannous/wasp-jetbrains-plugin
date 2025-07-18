@@ -1382,3 +1382,7 @@ bin/
 src/main/resources/bin
 
 sandbox
+
+.claude/settings.local.json
+
+settings.local.json
