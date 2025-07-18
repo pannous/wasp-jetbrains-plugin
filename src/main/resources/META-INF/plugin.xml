@@ -43,5 +43,21 @@
         <!-- Code folding -->
         <lang.foldingBuilder language="Wasp" 
                              implementationClass="com.pannous.wasp.WaspFoldingBuilder"/>
+        
+        <!-- Run configuration -->
+        <configurationType implementation="com.pannous.waspjetbrainsplugin.WaspRunConfigurationType"/>
+        
+        <!-- Run configuration producer -->
+        <runConfigurationProducer implementation="com.pannous.waspjetbrainsplugin.WaspRunConfigurationProducer"/>
     </extensions>
+    
+    <!-- Actions -->
+    <actions>
+        <!-- Run Wasp file action -->
+        <action id="wasp.run" class="com.pannous.waspjetbrainsplugin.WaspRunAction" text="Run Wasp File">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+            <add-to-group group-id="RunMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
