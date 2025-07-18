@@ -29,7 +29,7 @@ class WaspParser : PsiParser {
             Token.KEYWORD -> parseKeywordStatement(builder)
             Token.IDENTIFIER -> parseIdentifierStatement(builder)
             Token.STRING -> parseStringLiteral(builder)
-            Token.NUMBER -> parseNumberLiteral(builder)
+            Token.NUMBER -> parseArithmeticExpression(builder)
             Token.LBRACE -> parseBlock(builder, Token.RBRACE)
             Token.LBRACKET -> parseBlock(builder, Token.RBRACKET)
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
@@ -98,6 +98,32 @@ class WaspParser : PsiParser {
         val marker = builder.mark()
         builder.advanceLexer()
         marker.done(WaspElementTypes.NUMBER_LITERAL)
+    }
+
+    private fun parseArithmeticExpression(builder: PsiBuilder) {
+        val marker = builder.mark()
+        
+        // Parse the first operand
+        parseNumberLiteral(builder)
+        
+        // Parse operators and operands
+        while (!builder.eof() && 
+               builder.tokenType != Token.NEWLINE && 
+               builder.tokenType == Token.OPERATOR) {
+            builder.advanceLexer() // consume operator
+            
+            when (builder.tokenType) {
+                Token.NUMBER -> parseNumberLiteral(builder)
+                Token.IDENTIFIER -> builder.advanceLexer()
+                Token.LPAREN -> parseBlock(builder, Token.RPAREN)
+                else -> {
+                    builder.error("Expected number, identifier, or parenthesized expression")
+                    break
+                }
+            }
+        }
+        
+        marker.done(WaspElementTypes.ARITHMETIC_EXPRESSION)
     }
 
     private fun symbol(elem: IElementType): String {

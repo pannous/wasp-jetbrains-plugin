@@ -1375,3 +1375,9 @@ bin/
 /sandbox/system/.pid
 /sandbox/system/icons-v6.db
 /sandbox/system/port.lock
+
+.kotlin
+
+src/main/resources/bin
+
+sandbox

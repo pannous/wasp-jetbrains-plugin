@@ -24,12 +24,12 @@ class WaspLexer : LexerBase() {
             "break", "continue", "try", "except", "finally", "raise", "with", "yield",
             "lambda", "global", "True", "False", "None", "nil", "null", "is", "assert",
             "del", "fun", "in", "on", "of", "to", "with", "while", "it", "that", "which",
-            "type", "id")
+            "type", "id", "π", "τ")
 
         private val OPERATORS = setOf(
             "+", "-", "*", "/", "//", "%", "**", "=", "==", "!=", "<", ">", "<=", ">=",
             "<<", ">>", "&", "|", "^", "~", "+=", "-=", "*=", "/=", "//=", "%=", "**=",
-            "&=", "|=", "^=", "<<=", ">>="
+            "&=", "|=", "^=", "<<=", ">>=", "≈", "√","ʃ","×", "⁰","⁻¹","²","³","∈","∊"
         )
     }
 
