@@ -35,6 +35,11 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
             DefaultLanguageHighlighterColors.IDENTIFIER
         )
         
+        val TYPE = TextAttributesKey.createTextAttributesKey(
+            "WASP_TYPE", 
+            DefaultLanguageHighlighterColors.CLASS_NAME
+        )
+        
         val OPERATOR = TextAttributesKey.createTextAttributesKey(
             "WASP_OPERATOR", 
             DefaultLanguageHighlighterColors.OPERATION_SIGN
@@ -85,6 +90,7 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
             Token.NUMBER -> arrayOf(NUMBER)
             Token.COMMENT -> arrayOf(COMMENT)
             Token.IDENTIFIER -> arrayOf(IDENTIFIER)
+            Token.TYPE -> arrayOf(TYPE)
             Token.OPERATOR -> arrayOf(OPERATOR)
             Token.LBRACE, Token.RBRACE -> arrayOf(BRACES)
             Token.LBRACKET, Token.RBRACKET -> arrayOf(BRACKETS)

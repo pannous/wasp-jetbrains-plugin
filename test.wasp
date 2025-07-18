@@ -1,0 +1,38 @@
+# Sample Wasp file for testing syntax highlighting
+// This is a single-line comment with //
+/* This is a multi-line comment 
+   that spans multiple lines */
+"Hello World"
+
+# Function definition with Python-like syntax
+fibonacci number = if number<2 : 1 else fibonacci(number - 1) + fibonacci(number - 2)
+
+# Object notation like JSON/HTML
+form {
+    div { 
+        class: "form-group"
+        label { for: email "Email address:" }
+        input { type: email id: email }
+    }
+}
+
+# Variables and assignments
+name = "Wasp Language"
+version = 1.0
+active = True
+
+# Control structures
+if active:
+    print("Language is active")
+else:
+    print("Language is inactive")
+
+# Comments with different syntax elements
+// Single-line comments with double slash
+/* Multi-line comments with 
+   C-style syntax */
+# Keywords: if, else, for, while, in, not, and, or, def, class, return
+# Operators: +, -, *, /, =, ==, !=, <, >, <=, >=
+# Strings: "double quotes", 'single quotes'
+# Numbers: 123, 3.14, 0.5
+# Delimiters: {}, (), [], :, ;, ,, .
