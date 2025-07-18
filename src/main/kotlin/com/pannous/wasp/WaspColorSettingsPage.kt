@@ -12,6 +12,7 @@ class WaspColorSettingsPage : ColorSettingsPage {
     private val attributesDescriptors = arrayOf(
         AttributesDescriptor("Keyword", WaspSyntaxHighlighter.KEYWORD),
         AttributesDescriptor("Type", WaspSyntaxHighlighter.TYPE),
+        AttributesDescriptor("Function Call", WaspSyntaxHighlighter.FUNCTION_CALL),
         AttributesDescriptor("String", WaspSyntaxHighlighter.STRING),
         AttributesDescriptor("Number", WaspSyntaxHighlighter.NUMBER),
         AttributesDescriptor("Comment", WaspSyntaxHighlighter.COMMENT),
@@ -40,6 +41,12 @@ class WaspColorSettingsPage : ColorSettingsPage {
         map data = {"key": "value"}
         float64 pi = 3.14159
         bool flag = true
+        
+        /* Function calls */
+        print("Positive")
+        console.log("Debug message")
+        calculate(x, pi)
+        result = max(10, 20)
         
         /* Functions */
         fun calculate(a: int, b: real) -> float64 {

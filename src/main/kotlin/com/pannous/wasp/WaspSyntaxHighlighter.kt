@@ -40,6 +40,11 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
             DefaultLanguageHighlighterColors.CLASS_NAME
         )
         
+        val FUNCTION_CALL = TextAttributesKey.createTextAttributesKey(
+            "WASP_FUNCTION_CALL", 
+            DefaultLanguageHighlighterColors.FUNCTION_CALL
+        )
+        
         val OPERATOR = TextAttributesKey.createTextAttributesKey(
             "WASP_OPERATOR", 
             DefaultLanguageHighlighterColors.OPERATION_SIGN
