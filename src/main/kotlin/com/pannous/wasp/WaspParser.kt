@@ -28,10 +28,11 @@ class WaspParser : PsiParser {
         when (builder.tokenType) {
             Token.KEYWORD -> parseKeywordStatement(builder)
             Token.IDENTIFIER -> parseIdentifierStatement(builder)
+            Token.TYPE -> parseVariableDeclaration(builder)
             Token.STRING -> parseStringLiteral(builder)
             Token.NUMBER -> parseArithmeticExpression(builder)
-            Token.LBRACE -> parseBlock(builder, Token.RBRACE)
-            Token.LBRACKET -> parseBlock(builder, Token.RBRACKET)
+            Token.LBRACE -> parseMapLiteral(builder)
+            Token.LBRACKET -> parseArrayLiteral(builder)
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
             else -> {
                 builder.error("Unexpected token")
@@ -72,6 +73,101 @@ class WaspParser : PsiParser {
         marker.done(WaspElementTypes.IDENTIFIER_STATEMENT)
     }
 
+    private fun parseTypeStatement(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer() // consume type
+
+        // Parse the rest of the type declaration
+        while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
+            parseExpression(builder)
+        }
+
+        marker.done(WaspElementTypes.TYPE_STATEMENT)
+    }
+
+    private fun parseVariableDeclaration(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer() // consume type
+
+        // Parse variable name
+        if (builder.tokenType == Token.IDENTIFIER) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected variable name")
+        }
+
+        // Parse assignment
+        if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
+            builder.advanceLexer()
+            parseExpression(builder)
+        }
+
+        marker.done(WaspElementTypes.VARIABLE_DECLARATION)
+    }
+
+    private fun parseArrayLiteral(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer() // consume '['
+
+        while (!builder.eof() && builder.tokenType != Token.RBRACKET) {
+            when (builder.tokenType) {
+                Token.NEWLINE -> builder.advanceLexer()
+                Token.COMMENT -> builder.advanceLexer()
+                Token.COMMA -> builder.advanceLexer()
+                else -> parseExpression(builder)
+            }
+        }
+
+        if (builder.tokenType == Token.RBRACKET) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected ']'")
+        }
+
+        marker.done(WaspElementTypes.ARRAY_LITERAL)
+    }
+
+    private fun parseMapLiteral(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer() // consume '{'
+
+        while (!builder.eof() && builder.tokenType != Token.RBRACE) {
+            when (builder.tokenType) {
+                Token.NEWLINE -> builder.advanceLexer()
+                Token.COMMENT -> builder.advanceLexer()
+                Token.COMMA -> builder.advanceLexer()
+                else -> parseKeyValuePair(builder)
+            }
+        }
+
+        if (builder.tokenType == Token.RBRACE) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected '}'")
+        }
+
+        marker.done(WaspElementTypes.MAP_LITERAL)
+    }
+
+    private fun parseKeyValuePair(builder: PsiBuilder) {
+        val marker = builder.mark()
+        
+        // Parse key
+        parseExpression(builder)
+        
+        // Parse colon
+        if (builder.tokenType == Token.COLON) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected ':'")
+        }
+        
+        // Parse value
+        parseExpression(builder)
+        
+        marker.done(WaspElementTypes.KEY_VALUE_PAIR)
+    }
+
     private fun parseExpression(builder: PsiBuilder) {
         when (builder.tokenType) {
             Token.IDENTIFIER -> builder.advanceLexer()
@@ -79,8 +175,8 @@ class WaspParser : PsiParser {
             Token.NUMBER -> parseNumberLiteral(builder)
             Token.OPERATOR -> builder.advanceLexer()
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
-            Token.LBRACE -> parseBlock(builder, Token.RBRACE)
-            Token.LBRACKET -> parseBlock(builder, Token.RBRACKET)
+            Token.LBRACE -> parseMapLiteral(builder)
+            Token.LBRACKET -> parseArrayLiteral(builder)
             Token.COLON -> builder.advanceLexer()
             Token.COMMA -> builder.advanceLexer()
             Token.DOT -> builder.advanceLexer()

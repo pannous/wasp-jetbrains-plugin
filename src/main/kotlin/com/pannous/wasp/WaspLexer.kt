@@ -19,11 +19,34 @@ class WaspLexer : LexerBase() {
         // or use custom line breaks aka manual enters like here
         // @formatter:on
 
-        private val TYPES = setOf("real","int")
+        private val TYPES = setOf(
+            // Primitive types
+            "int", "real", "float", "double", "bool", "char", "string", "byte","codepoint",
+            // Collection types
+            "array", "list", "set", "map", "dict", "tuple", "vector", "matrix","node",
+            // Reference types
+            "object", "class", "interface", "struct", "union", "enum",
+            // Function types
+            "function", "func", "lambda", "closure", "method", "procedure",
+            // Memory types
+            "pointer", "reference", "ref",  "externref", "ptr", "address",
+            // Numeric types
+            "number", "integer", "decimal", "fraction", "complex", "rational",
+            "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64",
+            "float32", "float64", "long", "short", "unsigned", "signed",
+            // Special types
+            "void", "null", "nil", "nothing", "unit", "any", "auto", "var",
+            "const", "static", "final", "readonly", "mutable", "immutable",
+            // Domain-specific types
+            "time", "date", "datetime", "duration", "url", "path", "file",
+            "json", "xml", "html", "css", "regex", "uuid", "hash", "binary"
+        )
 
         private val KEYWORDS = setOf(
+            "def","fun","fn", // todo: function as type!
+            "extern","export",
             "if", "else", "elif", "for", "while", "in", "not",
-            "and", "or", "def", "class", "return", "import", "use", "from", "as", "pass",
+            "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
             "break", "continue", "try", "except", "finally", "raise", "with", "yield",
             "lambda", "global", "True", "False", "None", "nil", "null", "is", "assert",
             "del", "fun", "in", "on", "of", "to", "with", "while", "it", "that", "which",
@@ -178,10 +201,10 @@ class WaspLexer : LexerBase() {
             in 'a'..'z', in 'A'..'Z', '_' -> {
                 skipIdentifier()
                 val text = buffer.subSequence(tokenStart, tokenEnd).toString()
-                tokenType = if (KEYWORDS.contains(text)) {
-                    Token.KEYWORD
-                } else {
-                    Token.IDENTIFIER
+                tokenType = when {
+                    KEYWORDS.contains(text) -> Token.KEYWORD
+                    TYPES.contains(text) -> Token.TYPE
+                    else -> Token.IDENTIFIER
                 }
             }
 
@@ -262,9 +285,9 @@ class WaspLexer : LexerBase() {
         while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
-        if (buffer[position] == 'f' || buffer[position] == 'l')  // todo … c - compatible
+        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l'))  // todo … c - compatible
             position++
-        if (buffer[position] == 'π' || buffer[position] == 'τ')
+        if (position < end && (buffer[position] == 'π' || buffer[position] == 'τ'))
             position++
         tokenEnd = position
     }

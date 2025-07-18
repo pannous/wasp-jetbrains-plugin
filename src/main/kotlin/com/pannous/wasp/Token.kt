@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType
 object Token {
     val KEYWORD = IElementType("WASP_KEYWORD", WaspLanguage.INSTANCE)
     val IDENTIFIER = IElementType("WASP_IDENTIFIER", WaspLanguage.INSTANCE)
+    val TYPE = IElementType("WASP_TYPE", WaspLanguage.INSTANCE)
     val STRING = IElementType("WASP_STRING", WaspLanguage.INSTANCE)
     val NUMBER = IElementType("WASP_NUMBER", WaspLanguage.INSTANCE)
     val COMMENT = IElementType("WASP_COMMENT", WaspLanguage.INSTANCE)

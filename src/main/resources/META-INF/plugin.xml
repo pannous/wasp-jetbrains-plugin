@@ -49,6 +49,9 @@
         
         <!-- Run configuration producer -->
         <runConfigurationProducer implementation="com.pannous.waspjetbrainsplugin.WaspRunConfigurationProducer"/>
+        
+        <!-- Color settings page -->
+        <colorSettingsPage implementation="com.pannous.wasp.WaspColorSettingsPage"/>
     </extensions>
     
     <!-- Actions -->
