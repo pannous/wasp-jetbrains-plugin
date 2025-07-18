@@ -65,12 +65,17 @@ class WaspParser : PsiParser {
         val marker = builder.mark()
         builder.advanceLexer() // consume identifier
 
-        // Check for assignment or function call
-        while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
-            parseExpression(builder)
+        // Check for function call
+        if (builder.tokenType == Token.LPAREN) {
+            parseArgumentList(builder)
+            marker.done(WaspElementTypes.FUNCTION_CALL)
+        } else {
+            // Check for assignment or other expressions
+            while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
+                parseExpression(builder)
+            }
+            marker.done(WaspElementTypes.IDENTIFIER_STATEMENT)
         }
-
-        marker.done(WaspElementTypes.IDENTIFIER_STATEMENT)
     }
 
     private fun parseTypeStatement(builder: PsiBuilder) {
@@ -168,9 +173,42 @@ class WaspParser : PsiParser {
         marker.done(WaspElementTypes.KEY_VALUE_PAIR)
     }
 
+    private fun parseArgumentList(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer() // consume '('
+
+        while (!builder.eof() && builder.tokenType != Token.RPAREN) {
+            when (builder.tokenType) {
+                Token.NEWLINE -> builder.advanceLexer()
+                Token.COMMENT -> builder.advanceLexer()
+                Token.COMMA -> builder.advanceLexer()
+                else -> parseExpression(builder)
+            }
+        }
+
+        if (builder.tokenType == Token.RPAREN) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected ')'")
+        }
+
+        marker.done(WaspElementTypes.ARGUMENT_LIST)
+    }
+
     private fun parseExpression(builder: PsiBuilder) {
         when (builder.tokenType) {
-            Token.IDENTIFIER -> builder.advanceLexer()
+            Token.IDENTIFIER -> {
+                val marker = builder.mark()
+                builder.advanceLexer()
+                
+                // Check if this is a function call
+                if (builder.tokenType == Token.LPAREN) {
+                    parseArgumentList(builder)
+                    marker.done(WaspElementTypes.FUNCTION_CALL)
+                } else {
+                    marker.drop()
+                }
+            }
             Token.STRING -> parseStringLiteral(builder)
             Token.NUMBER -> parseNumberLiteral(builder)
             Token.OPERATOR -> builder.advanceLexer()

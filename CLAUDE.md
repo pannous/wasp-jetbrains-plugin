@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-This is a JetBrains IntelliJ IDEA plugin for the Wasp web framework, built with Kotlin and Gradle. The plugin currently appears to be in early development stages with basic scaffolding in place.
+This is a JetBrains IntelliJ IDEA plugin for the Wasp programing language  framework, built with Kotlin and Gradle. The plugin currently appears to be in early development stages with basic scaffolding in place.
 
 ## Architecture
 - **Language**: Kotlin with Java compatibility
@@ -72,6 +72,3 @@ The project follows standard IntelliJ plugin structure:
 - **Vendor**: Placeholder configuration needs updating
 
 ## Development Notes
-- The plugin uses Kotlin 1.8.21 with incremental compilation disabled (workaround for OOM issues)
-- No source code files exist yet in the main package - this is a fresh plugin scaffold
-- Plugin signing and publishing are configured but require environment variables for certificates and tokens

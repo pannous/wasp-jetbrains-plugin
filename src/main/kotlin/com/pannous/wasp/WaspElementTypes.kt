@@ -7,6 +7,8 @@ object WaspElementTypes {
     val IDENTIFIER_STATEMENT = IElementType("WASP_IDENTIFIER_STATEMENT", WaspLanguage.INSTANCE)
     val TYPE_STATEMENT = IElementType("WASP_TYPE_STATEMENT", WaspLanguage.INSTANCE)
     val VARIABLE_DECLARATION = IElementType("WASP_VARIABLE_DECLARATION", WaspLanguage.INSTANCE)
+    val FUNCTION_CALL = IElementType("WASP_FUNCTION_CALL", WaspLanguage.INSTANCE)
+    val ARGUMENT_LIST = IElementType("WASP_ARGUMENT_LIST", WaspLanguage.INSTANCE)
     val STRING_LITERAL = IElementType("WASP_STRING_LITERAL", WaspLanguage.INSTANCE)
     val NUMBER_LITERAL = IElementType("WASP_NUMBER_LITERAL", WaspLanguage.INSTANCE)
     val ARRAY_LITERAL = IElementType("WASP_ARRAY_LITERAL", WaspLanguage.INSTANCE)
