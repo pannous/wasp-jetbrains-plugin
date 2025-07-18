@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-This is a JetBrains IntelliJ IDEA plugin for the Wasp programing language  framework, built with Kotlin and Gradle. The plugin currently appears to be in early development stages with basic scaffolding in place.
+This is a JetBrains IntelliJ IDEA plugin for the Wasp programing language https://github.com/pannous/wasp/, built with Kotlin and Gradle
 
 ## Architecture
 - **Language**: Kotlin with Java compatibility
@@ -14,6 +14,7 @@ This is a JetBrains IntelliJ IDEA plugin for the Wasp programing language  frame
 - **Plugin ID**: `com.pannous.wasp-jetbrains-plugin`
 
 The project follows standard IntelliJ plugin structure:
+- `src/main/kotlin/com/pannous/wasp/` - Main source code of language definitions for plugin 
 - `src/main/kotlin/com/pannous/waspjetbrainsplugin/` - Main plugin source code
 - `src/main/resources/META-INF/plugin.xml` - Plugin configuration
 - `build.gradle.kts` - Build configuration with IntelliJ plugin setup
