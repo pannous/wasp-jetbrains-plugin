@@ -298,11 +298,40 @@ class WaspLexer : LexerBase() {
         while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
-        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l'))  // todo … c - compatible 3.0d 1ll …
-            position++
+        
+        // C-compatible numeric suffixes
+        skipNumericSuffix()
+        
         if (position < end && (buffer[position] == 'π' || buffer[position] == 'τ'))
             position++
         tokenEnd = position
+    }
+    
+    private fun skipNumericSuffix() {
+        if (position >= end) return
+        
+        val remaining = buffer.subSequence(position, end).toString().lowercase()
+        
+        // Check for all C-compatible suffixes (case insensitive)
+        val suffixes = listOf(
+            // Integer suffixes
+            "ull", "llu",  // unsigned long long
+            "ul", "lu",    // unsigned long  
+            "ll",          // long long
+            "l",           // long
+            "u",           // unsigned
+            // Float suffixes  
+            "f",           // float
+            "d",           // double
+            "ld"           // long double
+        )
+        
+        for (suffix in suffixes) {
+            if (remaining.startsWith(suffix)) {
+                position += suffix.length
+                return
+            }
+        }
     }
 
     private fun skipIdentifier() {

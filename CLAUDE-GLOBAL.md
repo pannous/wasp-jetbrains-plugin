@@ -1,0 +1,1 @@
+/Users/me/.claude/CLAUDE.md
