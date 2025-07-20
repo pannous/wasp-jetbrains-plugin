@@ -8,7 +8,7 @@ if [ $? -eq 0 ]; then
         # Check if there are any changes to commit
         if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
             git add -A
-            git commit -m "Changes complete - tests passing - $(date '+%Y-%m-%d %H:%M:%S')"
+            git commit --author="Claude <claude@pannous.com>" -m "tests ok - added testBooleanLiteral"
             echo "✓ Changes committed after successful tests"
         else
             echo "✓ No changes to commit after tests"
