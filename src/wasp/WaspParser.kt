@@ -217,6 +217,8 @@ class WaspParser : PsiParser {
             Token.STRING -> parseStringLiteral(builder)
             Token.NUMBER -> parseNumberLiteral(builder)
             Token.NULL -> parseNullLiteral(builder)
+            Token.NULL -> parseNullLiteral(builder)
+            Token.NULL -> parseNullLiteral(builder)
             Token.OPERATOR -> builder.advanceLexer()
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
             Token.LBRACE -> parseMapLiteral(builder)

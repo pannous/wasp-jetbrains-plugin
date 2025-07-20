@@ -58,6 +58,8 @@ class WaspLexer : LexerBase() {
             "<<", ">>", "&", "|", "^", "~", "+=", "-=", "*=", "/=", "//=", "%=", "**=",
             "&=", "|=", "^=", "<<=", ">>=", "≈", "√", "ʃ", "×", "⁰", "⁻¹", "²", "³", "∈", "∊"
         )
+
+        private val NULL_LITERALS = setOf("null", "nil", "None")
     }
 
     override fun start(buffer: CharSequence, startOffset: Int, endOffset: Int, initialState: Int) {
@@ -202,7 +204,7 @@ class WaspLexer : LexerBase() {
                 skipIdentifier()
                 val text = buffer.subSequence(tokenStart, tokenEnd).toString()
                 tokenType = when {
-                    text == "null" -> Token.NULL
+                    NULL_LITERALS.contains(text) -> Token.NULL
                     KEYWORDS.contains(text) -> Token.KEYWORD
                     TYPES.contains(text) -> Token.TYPE
                     else -> Token.IDENTIFIER

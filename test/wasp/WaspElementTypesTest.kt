@@ -26,21 +26,21 @@ class WaspElementTypesTest {
 
     @Test
     fun testElementTypeNames() {
-        assertEquals("WASP_KEYWORD_STATEMENT", WaspElementTypes.KEYWORD_STATEMENT.toString())
-        assertEquals("WASP_IDENTIFIER_STATEMENT", WaspElementTypes.IDENTIFIER_STATEMENT.toString())
-        assertEquals("WASP_TYPE_STATEMENT", WaspElementTypes.TYPE_STATEMENT.toString())
-        assertEquals("WASP_VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION.toString())
-        assertEquals("WASP_FUNCTION_CALL", WaspElementTypes.FUNCTION_CALL.toString())
-        assertEquals("WASP_ARGUMENT_LIST", WaspElementTypes.ARGUMENT_LIST.toString())
-        assertEquals("WASP_STRING_LITERAL", WaspElementTypes.STRING_LITERAL.toString())
-        assertEquals("WASP_NUMBER_LITERAL", WaspElementTypes.NUMBER_LITERAL.toString())
-        assertEquals("WASP_ARRAY_LITERAL", WaspElementTypes.ARRAY_LITERAL.toString())
-        assertEquals("WASP_MAP_LITERAL", WaspElementTypes.MAP_LITERAL.toString())
-        assertEquals("WASP_KEY_VALUE_PAIR", WaspElementTypes.KEY_VALUE_PAIR.toString())
-        assertEquals("WASP_ARITHMETIC_EXPRESSION", WaspElementTypes.ARITHMETIC_EXPRESSION.toString())
-        assertEquals("WASP_BLOCK", WaspElementTypes.BLOCK.toString())
-        assertEquals("WASP_PAREN_EXPRESSION", WaspElementTypes.PAREN_EXPRESSION.toString())
-        assertEquals("WASP_LIST_EXPRESSION", WaspElementTypes.LIST_EXPRESSION.toString())
+        assertEquals("KEYWORD_STATEMENT", WaspElementTypes.KEYWORD_STATEMENT.toString())
+        assertEquals("IDENTIFIER_STATEMENT", WaspElementTypes.IDENTIFIER_STATEMENT.toString())
+        assertEquals("TYPE_STATEMENT", WaspElementTypes.TYPE_STATEMENT.toString())
+        assertEquals("VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION.toString())
+        assertEquals("FUNCTION_CALL", WaspElementTypes.FUNCTION_CALL.toString())
+        assertEquals("ARGUMENT_LIST", WaspElementTypes.ARGUMENT_LIST.toString())
+        assertEquals("STRING_LITERAL", WaspElementTypes.STRING_LITERAL.toString())
+        assertEquals("NUMBER_LITERAL", WaspElementTypes.NUMBER_LITERAL.toString())
+        assertEquals("ARRAY_LITERAL", WaspElementTypes.ARRAY_LITERAL.toString())
+        assertEquals("MAP_LITERAL", WaspElementTypes.MAP_LITERAL.toString())
+        assertEquals("KEY_VALUE_PAIR", WaspElementTypes.KEY_VALUE_PAIR.toString())
+        assertEquals("ARITHMETIC_EXPRESSION", WaspElementTypes.ARITHMETIC_EXPRESSION.toString())
+        assertEquals("BLOCK", WaspElementTypes.BLOCK.toString())
+        assertEquals("PAREN_EXPRESSION", WaspElementTypes.PAREN_EXPRESSION.toString())
+        assertEquals("LIST_EXPRESSION", WaspElementTypes.LIST_EXPRESSION.toString())
     }
 
     @Test

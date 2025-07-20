@@ -11,77 +11,77 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
     
     companion object {
         val KEYWORD = TextAttributesKey.createTextAttributesKey(
-            "WASP_KEYWORD", 
+            "KEYWORD", 
             DefaultLanguageHighlighterColors.KEYWORD
         )
         
         val STRING = TextAttributesKey.createTextAttributesKey(
-            "WASP_STRING", 
+            "STRING", 
             DefaultLanguageHighlighterColors.STRING
         )
         
         val NUMBER = TextAttributesKey.createTextAttributesKey(
-            "WASP_NUMBER", 
+            "NUMBER", 
             DefaultLanguageHighlighterColors.NUMBER
         )
         
         val COMMENT = TextAttributesKey.createTextAttributesKey(
-            "WASP_COMMENT", 
+            "COMMENT", 
             DefaultLanguageHighlighterColors.LINE_COMMENT
         )
         
         val IDENTIFIER = TextAttributesKey.createTextAttributesKey(
-            "WASP_IDENTIFIER", 
+            "IDENTIFIER", 
             DefaultLanguageHighlighterColors.IDENTIFIER
         )
         
         val TYPE = TextAttributesKey.createTextAttributesKey(
-            "WASP_TYPE", 
+            "TYPE", 
             DefaultLanguageHighlighterColors.CLASS_NAME
         )
         
         val FUNCTION_CALL = TextAttributesKey.createTextAttributesKey(
-            "WASP_FUNCTION_CALL", 
+            "FUNCTION_CALL", 
             DefaultLanguageHighlighterColors.FUNCTION_CALL
         )
         
         val OPERATOR = TextAttributesKey.createTextAttributesKey(
-            "WASP_OPERATOR", 
+            "OPERATOR", 
             DefaultLanguageHighlighterColors.OPERATION_SIGN
         )
         
         val BRACES = TextAttributesKey.createTextAttributesKey(
-            "WASP_BRACES", 
+            "BRACES", 
             DefaultLanguageHighlighterColors.BRACES
         )
         
         val BRACKETS = TextAttributesKey.createTextAttributesKey(
-            "WASP_BRACKETS", 
+            "BRACKETS", 
             DefaultLanguageHighlighterColors.BRACKETS
         )
         
         val PARENTHESES = TextAttributesKey.createTextAttributesKey(
-            "WASP_PARENTHESES", 
+            "PARENTHESES", 
             DefaultLanguageHighlighterColors.PARENTHESES
         )
         
         val COMMA = TextAttributesKey.createTextAttributesKey(
-            "WASP_COMMA", 
+            "COMMA", 
             DefaultLanguageHighlighterColors.COMMA
         )
         
         val DOT = TextAttributesKey.createTextAttributesKey(
-            "WASP_DOT", 
+            "DOT", 
             DefaultLanguageHighlighterColors.DOT
         )
         
         val SEMICOLON = TextAttributesKey.createTextAttributesKey(
-            "WASP_SEMICOLON", 
+            "SEMICOLON", 
             DefaultLanguageHighlighterColors.SEMICOLON
         )
         
         val COLON = TextAttributesKey.createTextAttributesKey(
-            "WASP_COLON", 
+            "COLON", 
             DefaultLanguageHighlighterColors.OPERATION_SIGN
         )
     }
@@ -106,7 +106,7 @@ class WaspSyntaxHighlighter : SyntaxHighlighterBase() {
             Token.COLON -> arrayOf(COLON)
             TokenType.BAD_CHARACTER -> arrayOf(
                 TextAttributesKey.createTextAttributesKey(
-                    "WASP_BAD_CHARACTER", 
+                    "BAD_CHARACTER", 
                     DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
                 )
             )
