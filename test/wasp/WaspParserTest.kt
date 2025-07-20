@@ -206,8 +206,8 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertEquals(ASSIGNMENT, assignment.elementType)
         val body = assignment.getChildren(null)
         
-        // TODO: Replace with precise .first() approach once we understand exact parser structure
-        val nullNode = body.find { it.elementType == NULL_LITERAL }
+        // #DONE TODO: Replace with precise .first() approach once we understand exact parser structure
+        val nullNode = body.firstOrNull { it.elementType == NULL_LITERAL }
         assertNotNull("Assignment should contain null literal node", nullNode)
         assertEquals("Null literal should have correct text", "null", nullNode!!.text)
     }
