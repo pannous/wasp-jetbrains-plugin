@@ -1,4 +1,4 @@
-package com.pannous.wasp
+package wasp
 
 import com.intellij.lang.ASTNode
 import com.intellij.lang.PsiBuilder

@@ -1,4 +1,4 @@
-package com.pannous.wasp
+package wasp
 
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon

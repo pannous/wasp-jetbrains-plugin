@@ -1,4 +1,4 @@
-package com.pannous.wasp
+package wasp
 
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
