@@ -279,6 +279,133 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         }
     }
 
+    fun testAllTypes() {
+        // Test primitive types
+        val primitiveTypes = listOf(
+            "int", "real", "float", "double", "bool", "char", "string", "byte", "codepoint"
+        )
+        
+        for (type in primitiveTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test capitalized types
+        val capitalizedTypes = listOf(
+            "String", "Number", "Boolean"
+        )
+        
+        for (type in capitalizedTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test collection types
+        val collectionTypes = listOf(
+            "array", "list", "set", "map", "dict", "tuple", "vector", "matrix", "node"
+        )
+        
+        for (type in collectionTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test capitalized collection types
+        val capitalizedCollectionTypes = listOf(
+            "Array", "Object"
+        )
+        
+        for (type in capitalizedCollectionTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test reference types
+        val referenceTypes = listOf(
+            "object", "class", "interface", "struct", "union", "enum"
+        )
+        
+        for (type in referenceTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test capitalized reference types
+        val capitalizedReferenceTypes = listOf(
+            "Class", "Type"
+        )
+        
+        for (type in capitalizedReferenceTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test function types
+        val functionTypes = listOf(
+            "Function", "func", "lambda", "closure", "method", "procedure"
+        )
+        
+        for (type in functionTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test memory types
+        val memoryTypes = listOf(
+            "pointer", "reference", "ref", "externref", "ptr", "address"
+        )
+        
+        for (type in memoryTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test numeric types
+        val numericTypes = listOf(
+            "number", "integer", "decimal", "fraction", "complex", "rational",
+            "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64",
+            "float32", "float64", "long", "short", "unsigned", "signed"
+        )
+        
+        for (type in numericTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test special types
+        val specialTypes = listOf(
+            "void", "null", "nil", "nothing", "unit", "any", "auto", "var",
+            "const", "static", "final", "readonly", "mutable", "immutable"
+        )
+        
+        for (type in specialTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+        
+        // Test domain-specific types
+        val domainTypes = listOf(
+            "time", "date", "datetime", "duration", "url", "path", "file",
+            "json", "xml", "html", "css", "regex", "uuid", "hash", "binary"
+        )
+        
+        for (type in domainTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            assertTrue("$type should be recognized as type", nodes.isNotEmpty())
+        }
+    }
+
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
