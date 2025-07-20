@@ -23,4 +23,5 @@ object Token {
     val COLON = IElementType("WASP_COLON", WaspLanguage.INSTANCE)
     val SEMICOLON = IElementType("WASP_SEMICOLON", WaspLanguage.INSTANCE)
     val DOT = IElementType("WASP_DOT", WaspLanguage.INSTANCE)
+    val NULL = IElementType("WASP_NULL", WaspLanguage.INSTANCE)
 }

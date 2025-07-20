@@ -18,4 +18,6 @@ object WaspElementTypes {
     val BLOCK = IElementType("WASP_BLOCK", WaspLanguage.INSTANCE)
     val PAREN_EXPRESSION = IElementType("WASP_PAREN_EXPRESSION", WaspLanguage.INSTANCE)
     val LIST_EXPRESSION = IElementType("WASP_LIST_EXPRESSION", WaspLanguage.INSTANCE)
+    val ASSIGNMENT = IElementType("WASP_ASSIGNMENT", WaspLanguage.INSTANCE)
+    val NULL_LITERAL = IElementType("WASP_NULL_LITERAL", WaspLanguage.INSTANCE)
 }
