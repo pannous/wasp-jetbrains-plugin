@@ -232,6 +232,53 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertTrue("Smart quotes should produce nodes", smartNodes.isNotEmpty())
     }
 
+    fun testNumericSuffixes() {
+        // Test integer suffixes
+        val integerTests = listOf(
+            "42u",      // unsigned
+            "42U",      // unsigned (uppercase)
+            "42l",      // long
+            "42L",      // long (uppercase)
+            "42ll",     // long long
+            "42LL",     // long long (uppercase)
+            "42ul",     // unsigned long
+            "42UL",     // unsigned long (uppercase)
+            "42lu",     // unsigned long (alternative)
+            "42LU",     // unsigned long (alternative uppercase)
+            "42ull",    // unsigned long long
+            "42ULL",    // unsigned long long (uppercase)
+            "42llu",    // unsigned long long (alternative)
+            "42LLU"     // unsigned long long (alternative uppercase)
+        )
+        
+        for (code in integerTests) {
+            val nodes = parse(code)
+            assertTrue("$code should produce nodes", nodes.isNotEmpty())
+        }
+        
+        // Test float suffixes
+        val floatTests = listOf(
+            "3.14f",    // float
+            "3.14F",    // float (uppercase)
+            "3.14d",    // double
+            "3.14D",    // double (uppercase)
+            "3.14ld",   // long double
+            "3.14LD"    // long double (uppercase)
+        )
+        
+        for (code in floatTests) {
+            val nodes = parse(code)
+            assertTrue("$code should produce nodes", nodes.isNotEmpty())
+        }
+        
+        // Test numbers without suffixes still work
+        val basicNumbers = listOf("42", "3.14", "0", "123.456")
+        for (code in basicNumbers) {
+            val nodes = parse(code)
+            assertTrue("$code should produce nodes", nodes.isNotEmpty())
+        }
+    }
+
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
