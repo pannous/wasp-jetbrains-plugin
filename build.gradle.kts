@@ -52,6 +52,15 @@ tasks {
 
     }
 
+    test {
+        testLogging {
+            events("failed")
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showStandardStreams = true
+            showStackTraces = true
+        }
+    }
+
     patchPluginXml {
         sinceBuild.set("222")
         untilBuild.set("252.*")
