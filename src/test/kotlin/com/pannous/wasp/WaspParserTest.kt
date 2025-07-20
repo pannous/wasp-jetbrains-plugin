@@ -264,6 +264,16 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         val code = "value = null"
         val result = parseCode(code)
         assertNotNull("Result should not be null", result)
+        
+        // Verify AST structure contains expected elements
+        val text = result?.text
+        assertNotNull("AST should have text content", text)
+        assertTrue("Should contain 'value' identifier", text!!.contains("value"))
+        assertTrue("Should contain 'null' literal", text.contains("null"))
+        
+        // Verify the AST has child nodes representing the assignment
+        val children = result.getChildren(null)
+        assertTrue("AST should have child nodes for assignment", children.isNotEmpty())
     }
 
     private fun parseCode(code: String): ASTNode? {

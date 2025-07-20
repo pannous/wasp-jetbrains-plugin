@@ -74,9 +74,29 @@ The project follows standard IntelliJ plugin structure:
 
 ## Development Notes
 
+### Test Structure
+Parser tests are located in `src/test/kotlin/com/pannous/wasp/WaspParserTest.kt` and follow these patterns:
+- **Test Framework**: Extends `ParsingTestCase` from IntelliJ Platform
+- **Test Data Path**: `src/test/resources/testData`
+- **Test Method Pattern**: `fun testXxxYyy()` with descriptive names
+- **Code Parsing**: Use `parseCode(code: String)` helper method that creates PSI file and returns AST node
+- **End-to-end Tests**: Prefer simple tests that check complex machinery: 
+	- `parseCode("var x = 42")` should return a valid AST node for variable declaration
+	- `parseCode("function foo(x) { return 42+1; }")` should return a valid AST function declaration node with one parameter
+- **Test Categories**: 
+  - Basic literals (string, number, boolean, null, array, map)
+  - Statements (keyword, identifier, variable declaration, function calls)
+  - Complex structures (nested blocks, arithmetic expressions)
+  - Malformed input handling
+  - Element type and token type validation
+- **Test File Coverage**: Tests verify parser methods exist and element types are properly defined
+- **Run Tests**: Use `./gradlew test` to verify all tests pass
+
 ### Commit Workflow
 After completing any coding task:
 1. **Always commit your changes** with a meaningful message describing what you implemented and why
 2. Use conventional commit format: `type: description` (e.g., `test: add boolean literal parsing test`, `feat: implement syntax highlighting for arrays`)
 3. Focus on the intent and purpose, not just the technical changes
-4. Commit immediately after successful completion of tasks
+4. Use claude@pannous.com as author
+5. Do NOT sign the commits with Co-Authored … nor your name (claude)
+6. Commit immediately after successful completion of tasks
