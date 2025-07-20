@@ -260,6 +260,12 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertNotNull("Result should not be null", result)
     }
 
+    fun testNullLiteral() {
+        val code = "value = null"
+        val result = parseCode(code)
+        assertNotNull("Result should not be null", result)
+    }
+
     private fun parseCode(code: String): ASTNode? {
         val psiFile = createPsiFile("test", code)
         return psiFile?.node
