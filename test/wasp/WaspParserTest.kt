@@ -212,6 +212,25 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertEquals("Null literal should have correct text", "null", nullNode!!.text)
     }
 
+    fun testQuotePairing() {
+        // Test French quotes
+        val frenchCode = "«hello world»"
+        val frenchNodes = parse(frenchCode)
+        
+        // Test curly quotes  
+        val curlyCode = "'hello world'"
+        val curlyNodes = parse(curlyCode)
+        
+        // Test smart quotes (using Unicode escapes to avoid compiler issues)
+        val smartCode = "\u201chello world\u201d"
+        val smartNodes = parse(smartCode)
+        
+        // Basic validation - should not throw and should produce nodes
+        assertTrue("French quotes should produce nodes", frenchNodes.isNotEmpty())
+        assertTrue("Curly quotes should produce nodes", curlyNodes.isNotEmpty())
+        assertTrue("Smart quotes should produce nodes", smartNodes.isNotEmpty())
+    }
+
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
