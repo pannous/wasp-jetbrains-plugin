@@ -43,7 +43,7 @@ class WaspLexer : LexerBase() {
         )
 
         private val KEYWORDS = setOf(
-            "def","fun","fn", // todo: function as type!
+            "def","fun","fn", // todo: function (also) as type in TYPES!?
             "extern","export",
             "if", "else", "elif", "for", "while", "in", "not",
             "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
@@ -130,7 +130,7 @@ class WaspLexer : LexerBase() {
                 }
             }
 
-            '"', '\'', '`', '“', '‘' -> { // todo closing , '«'
+            '"', '\'', '`', '“', '‘', '«' -> {
                 skipString(char)
                 tokenType = Token.STRING
             }
@@ -269,9 +269,19 @@ class WaspLexer : LexerBase() {
         tokenEnd = position
     }
 
+    private fun getClosingQuote(openQuote: Char): Char {
+        return when (openQuote) {
+            '«' -> '»'
+            '‘' -> '’'
+            '“' -> '”'
+            else -> openQuote // For most quotes, closing is same as opening
+        }
+    }
+
     private fun skipString(quote: Char) {
         position++ // skip opening quote
-        while (position < end && buffer[position] != quote) {
+        val closingQuote = getClosingQuote(quote)
+        while (position < end && buffer[position] != closingQuote) {
             if (buffer[position] == '\\' && position + 1 < end) {
                 position += 2 // skip escaped character
             } else {
@@ -288,7 +298,7 @@ class WaspLexer : LexerBase() {
         while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
-        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l'))  // todo … c - compatible
+        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l'))  // todo … c - compatible 3.0d 1ll …
             position++
         if (position < end && (buffer[position] == 'π' || buffer[position] == 'τ'))
             position++
