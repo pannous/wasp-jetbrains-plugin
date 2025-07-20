@@ -22,12 +22,15 @@ class WaspLexer : LexerBase() {
         private val TYPES = setOf(
             // Primitive types
             "int", "real", "float", "double", "bool", "char", "string", "byte","codepoint",
+            "String", "Number", "Boolean",
             // Collection types
             "array", "list", "set", "map", "dict", "tuple", "vector", "matrix","node",
+            "Array", "Object",
             // Reference types
             "object", "class", "interface", "struct", "union", "enum",
+            "Class", "Type",
             // Function types
-            "function", "func", "lambda", "closure", "method", "procedure",
+            "Function", "func", "lambda", "closure", "method", "procedure",
             // Memory types
             "pointer", "reference", "ref",  "externref", "ptr", "address",
             // Numeric types
@@ -43,7 +46,7 @@ class WaspLexer : LexerBase() {
         )
 
         private val KEYWORDS = setOf(
-            "def","fun","fn", // todo: function (also) as type in TYPES!?
+            "def","fun","fn", // DONE: function (also) as type in TYPES!? -> added Function
             "extern","export",
             "if", "else", "elif", "for", "while", "in", "not",
             "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
