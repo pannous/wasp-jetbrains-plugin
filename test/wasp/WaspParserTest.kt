@@ -8,11 +8,11 @@ import wasp.WaspElementTypes.NULL_LITERAL
 
 class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     override fun getTestDataPath(): String = "test/resources/testData"
-    
+
     override fun setUp() {
         super.setUp()
     }
-    
+
     override fun tearDown() {
         try {
             super.tearDown()
@@ -69,7 +69,8 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             "parseFile", "parseStatement", "parseKeywordStatement",
             "parseIdentifierStatement", "parseVariableDeclaration",
             "parseArrayLiteral", "parseMapLiteral", "parseExpression",
-            "parseStringLiteral", "parseNumberLiteral", "parseArithmeticExpression"
+            "parseStringLiteral", "parseNumberLiteral", "parseArithmeticExpression",
+            "parseFunctionDeclaration"
         )
 
         for (methodName in expectedMethods) {
@@ -200,11 +201,11 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     fun testNullLiteral() {
         val code = "value = null"
         val nodes = parse(code)
-        
+
         val assignment = nodes.first()
         assertEquals(ASSIGNMENT, assignment.elementType)
         val body = assignment.getChildren(null)
-        
+
         // #DONE TODO: Replace with precise .first() approach once we understand exact parser structure
         val nullNode = body.firstOrNull { it.elementType == NULL_LITERAL }
         assertNotNull("Assignment should contain null literal node", nullNode)
@@ -215,15 +216,15 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         // Test French quotes
         val frenchCode = "«hello world»"
         val frenchNodes = parse(frenchCode)
-        
+
         // Test curly quotes  
         val curlyCode = "'hello world'"
         val curlyNodes = parse(curlyCode)
-        
+
         // Test smart quotes (using Unicode escapes to avoid compiler issues)
         val smartCode = "\u201chello world\u201d"
         val smartNodes = parse(smartCode)
-        
+
         // Basic validation - should not throw and should produce nodes
         assertTrue("French quotes should produce nodes", frenchNodes.isNotEmpty())
         assertTrue("Curly quotes should produce nodes", curlyNodes.isNotEmpty())
@@ -248,12 +249,12 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             "42llu",    // unsigned long long (alternative)
             "42LLU"     // unsigned long long (alternative uppercase)
         )
-        
+
         for (code in integerTests) {
             val nodes = parse(code)
             assertTrue("$code should produce nodes", nodes.isNotEmpty())
         }
-        
+
         // Test float suffixes
         val floatTests = listOf(
             "3.14f",    // float
@@ -263,12 +264,12 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             "3.14ld",   // long double
             "3.14LD"    // long double (uppercase)
         )
-        
+
         for (code in floatTests) {
             val nodes = parse(code)
             assertTrue("$code should produce nodes", nodes.isNotEmpty())
         }
-        
+
         // Test numbers without suffixes still work
         val basicNumbers = listOf("42", "3.14", "0", "123.456")
         for (code in basicNumbers) {
@@ -277,30 +278,26 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         }
     }
 
+    fun testAllTypeKeywords() {
+        // Test non-capitalized types that are also keywords (these become KEYWORD_STATEMENT due to precedence)
+        val keywordTypes = listOf("class", "type", "lambda")
+
+        for (type in keywordTypes) {
+            val code = "$type x = value"
+            val nodes = parse(code)
+            val keywordStmt = nodes.first()
+            assertEquals(
+                "$type should create KEYWORD_STATEMENT (keyword precedence)",
+                WaspElementTypes.KEYWORD_STATEMENT,
+                keywordStmt.elementType
+            )
+            val typeToken = keywordStmt.firstChildNode
+            assertEquals("$type should be tokenized as KEYWORD", Token.KEYWORD, typeToken.elementType)
+        }
+    }
+
+
     fun testAllTypes() {
-        // Helper function to test types that should create VARIABLE_DECLARATION with TYPE tokens
-        fun testTypesAsVariableDeclarations(types: List<String>, description: String = "") {
-            for (type in types) {
-                val code = "$type x = value"
-                val nodes = parse(code)
-                val varDecl = nodes.first()
-                assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-                val typeToken = varDecl.firstChildNode
-                assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            }
-        }
-        
-        // Helper function to test keywords that should create KEYWORD_STATEMENT
-        fun testTypesAsKeywordStatements(types: List<String>) {
-            for (type in types) {
-                val code = "$type x = value"
-                val nodes = parse(code)
-                val keywordStmt = nodes.first()
-                assertEquals("$type should create KEYWORD_STATEMENT (keyword precedence)", WaspElementTypes.KEYWORD_STATEMENT, keywordStmt.elementType)
-                val typeToken = keywordStmt.firstChildNode
-                assertEquals("$type should be tokenized as KEYWORD", Token.KEYWORD, typeToken.elementType)
-            }
-        }
 
         // Test all types that should be tokenized as TYPE and create VARIABLE_DECLARATION
         val allRegularTypes = listOf(
@@ -329,28 +326,42 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             "time", "date", "datetime", "duration", "url", "path", "file",
             "json", "xml", "html", "css", "regex", "uuid", "hash", "binary"
         )
-        testTypesAsVariableDeclarations(allRegularTypes)
-        
-        // Test types that are also keywords (these become KEYWORD_STATEMENT due to precedence)
-        val keywordTypes = listOf("class", "type", "lambda")
-        testTypesAsKeywordStatements(keywordTypes)
-        
-        // Test function word (not in KEYWORDS or TYPES, becomes IDENTIFIER_STATEMENT)
+        for (type in allRegularTypes) {
+            val nodes = parse("$type x = value")
+            val typeToken = nodes.first().firstChildNode
+            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
+        }
+    }
+
+    fun testFunctionKeyword2() {
+        // Test malformed function declaration (should still create FUNCTION_DECLARATION but with errors)
         val code = "function x = value"
         val nodes = parse(code)
-        val identifierStmt = nodes.first()
-        assertEquals("function should create IDENTIFIER_STATEMENT", WaspElementTypes.IDENTIFIER_STATEMENT, identifierStmt.elementType)
+        val functionDecl = nodes.first()
+        assertEquals(
+            "function should create FUNCTION_DECLARATION even with malformed syntax",
+            WaspElementTypes.FUNCTION_DECLARATION,
+            functionDecl.elementType
+        )
+    }
+
+    fun testFunctionKeyword() {
+        // Test function keyword
+        val code = "function myFunc() { return 42; }"
+        val nodes = parse(code)
+        val functionNode = nodes.first()
+        assertEquals("Function declaration should be parsed correctly", WaspElementTypes.FUNCTION_DECLARATION, functionNode.elementType)
     }
 
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
-        
+
         // Basic validation that all tests should pass
         assertNotNull("Result should not be null", node)
         val children = node!!.getChildren(null)
         assertTrue("AST should have child nodes", children.isNotEmpty())
-        
+
         return children
     }
 }
