@@ -43,7 +43,7 @@ class WaspLexer : LexerBase() {
         )
 
         private val KEYWORDS = setOf(
-            "def","fun","fn", // todo: function as type!
+            "def","fun","fn", // function declaration keywords (fn can also be a type)
             "extern","export",
             "if", "else", "elif", "for", "while", "in", "not",
             "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
@@ -288,7 +288,7 @@ class WaspLexer : LexerBase() {
         while (position < end && (buffer[position].isDigit() || buffer[position] == '.' || buffer[position] == '_')) {
             position++
         }
-        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l'))  // todo … c - compatible
+        if (position < end && (buffer[position] == 'f' || buffer[position] == 'l' || buffer[position] == 'c'))  // c-compatible suffixes
             position++
         if (position < end && (buffer[position] == 'π' || buffer[position] == 'τ'))
             position++
