@@ -111,5 +111,4 @@ After completing any coding task:
 8. Commit immediately after successful completion of each focused task
 
 ## Memories
-- wow
-- I'm using speech recognition so you can always assume when you encounter an unexpected word which matches vaguely another word that makes sense that it was a misspelling
+- I'm using speech recognition so you can always assume when you encounter an unexpected word which matches vaguely another word that makes sense that it was a misspelling. E.g. parcel => parser
