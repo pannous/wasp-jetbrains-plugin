@@ -73,3 +73,10 @@ The project follows standard IntelliJ plugin structure:
 - **Vendor**: Placeholder configuration needs updating
 
 ## Development Notes
+
+### Commit Workflow
+After completing any coding task:
+1. **Always commit your changes** with a meaningful message describing what you implemented and why
+2. Use conventional commit format: `type: description` (e.g., `test: add boolean literal parsing test`, `feat: implement syntax highlighting for arrays`)
+3. Focus on the intent and purpose, not just the technical changes
+4. Commit immediately after successful completion of tasks
