@@ -20,4 +20,5 @@ object WaspElementTypes {
     val LIST_EXPRESSION = IElementType("LIST_EXPRESSION", WaspLanguage.INSTANCE)
     val ASSIGNMENT = IElementType("ASSIGNMENT", WaspLanguage.INSTANCE)
     val NULL_LITERAL = IElementType("NULL_LITERAL", WaspLanguage.INSTANCE)
+    val FUNCTION_DECLARATION = IElementType("FUNCTION_DECLARATION", WaspLanguage.INSTANCE)
 }

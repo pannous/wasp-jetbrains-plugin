@@ -43,7 +43,14 @@ class WaspParser : PsiParser {
 
     private fun parseKeywordStatement(builder: PsiBuilder) {
         val marker = builder.mark()
+        val keywordText = builder.tokenText
         builder.advanceLexer() // consume keyword
+
+        // Check if this is a function declaration
+        if (keywordText == "function") {
+            parseFunctionDeclaration(builder, marker)
+            return
+        }
 
         // Parse the rest of the statement based on context
         val type = builder.tokenType
@@ -113,6 +120,31 @@ class WaspParser : PsiParser {
         }
 
         marker.done(WaspElementTypes.VARIABLE_DECLARATION)
+    }
+
+    private fun parseFunctionDeclaration(builder: PsiBuilder, marker: PsiBuilder.Marker) {
+        // Parse function name
+        if (builder.tokenType == Token.IDENTIFIER) {
+            builder.advanceLexer()
+        } else {
+            builder.error("Expected function name")
+        }
+
+        // Parse parameter list
+        if (builder.tokenType == Token.LPAREN) {
+            parseArgumentList(builder)
+        } else {
+            builder.error("Expected '(' after function name")
+        }
+
+        // Parse function body
+        if (builder.tokenType == Token.LBRACE) {
+            parseBlock(builder, Token.RBRACE)
+        } else {
+            builder.error("Expected '{' for function body")
+        }
+
+        marker.done(WaspElementTypes.FUNCTION_DECLARATION)
     }
 
     private fun parseArrayLiteral(builder: PsiBuilder) {

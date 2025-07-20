@@ -46,7 +46,7 @@ class WaspLexer : LexerBase() {
         )
 
         private val KEYWORDS = setOf(
-            "def","fun","fn", // DONE: function (also) as type in TYPES!? -> added Function
+            "def","fun","fn","function", // DONE: function (also) as type in TYPES!? -> added Function
             "extern","export",
             "if", "else", "elif", "for", "while", "in", "not",
             "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
