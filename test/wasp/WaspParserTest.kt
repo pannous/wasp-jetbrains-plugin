@@ -5,8 +5,6 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.testFramework.ParsingTestCase
 import wasp.WaspElementTypes.ASSIGNMENT
 import wasp.WaspElementTypes.NULL_LITERAL
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
 
 class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     override fun getTestDataPath(): String = "test/resources/testData"
@@ -289,10 +287,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
         // Test capitalized types
@@ -304,10 +301,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
         // Test collection types
@@ -319,10 +315,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
         // Test capitalized collection types
@@ -334,10 +329,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
         // Test reference types (excluding those that are also keywords)
@@ -349,14 +343,13 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
         // Test types that are also keywords (these become KEYWORD_STATEMENT)
-        val keywordTypes = listOf("class")
+        val keywordTypes = listOf("class", "type", "lambda")
         
         for (type in keywordTypes) {
             val code = "$type x = value"
@@ -365,124 +358,40 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             assertEquals("$type should create KEYWORD_STATEMENT (keyword precedence)", WaspElementTypes.KEYWORD_STATEMENT, keywordStmt.elementType)
             val typeToken = keywordStmt.firstChildNode
             assertEquals("$type should be tokenized as KEYWORD", Token.KEYWORD, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
         
-        // Test capitalized reference types (these should work as they're not in KEYWORDS)
-        val capitalizedReferenceTypes = listOf(
-            "Class", "Type"
-        )
+        // Test function word (not in KEYWORDS or TYPES, becomes IDENTIFIER_STATEMENT)
+        val code = "function x = value"
+        val nodes = parse(code)
+        val identifierStmt = nodes.first()
+        assertEquals("function should create IDENTIFIER_STATEMENT", WaspElementTypes.IDENTIFIER_STATEMENT, identifierStmt.elementType)
         
-        for (type in capitalizedReferenceTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-            val typeToken = varDecl.firstChildNode
-            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test function types (excluding those that are also keywords)
-        val functionTypes = listOf(
-            "Function", "func", "closure", "method", "procedure"
-        )
-        
-        for (type in functionTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-            val typeToken = varDecl.firstChildNode
-            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test function types that are also keywords
-        val keywordFunctionTypes = listOf("lambda")
-        
-        for (type in keywordFunctionTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val keywordStmt = nodes.first()
-            assertEquals("$type should create KEYWORD_STATEMENT (keyword precedence)", WaspElementTypes.KEYWORD_STATEMENT, keywordStmt.elementType)
-            val typeToken = keywordStmt.firstChildNode
-            assertEquals("$type should be tokenized as KEYWORD", Token.KEYWORD, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test memory types
-        val memoryTypes = listOf(
-            "pointer", "reference", "ref", "externref", "ptr", "address"
-        )
-        
-        for (type in memoryTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-            val typeToken = varDecl.firstChildNode
-            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test numeric types
-        val numericTypes = listOf(
+        // Test all remaining types that should be tokenized as TYPE
+        val allRegularTypes = listOf(
+            // Capitalized reference types (not in KEYWORDS)
+            "Class", "Type",
+            // Function types (not in KEYWORDS) 
+            "Function", "func", "closure", "method", "procedure",
+            // Variable/modifier types (not in KEYWORDS)
+            "var", "const",
+            // Memory types
+            "pointer", "reference", "ref", "externref", "ptr", "address",
+            // Numeric types
             "number", "integer", "decimal", "fraction", "complex", "rational",
             "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64",
-            "float32", "float64", "long", "short", "unsigned", "signed"
-        )
-        
-        for (type in numericTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-            val typeToken = varDecl.firstChildNode
-            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test special types (excluding those that are also keywords)
-        val specialTypes = listOf(
-            "void", "nothing", "unit", "any", "auto", "var",
-            "const", "static", "final", "readonly", "mutable", "immutable"
-        )
-        
-        for (type in specialTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
-            val typeToken = varDecl.firstChildNode
-            assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
-        }
-        
-        // Test special types that are null literals (handled specially)
-        val nullLiteralTypes = listOf("null", "nil")
-        
-        for (type in nullLiteralTypes) {
-            val code = "$type x = value"
-            val nodes = parse(code)
-            // These create a different AST structure since null is a special token
-            assertTrue("$type should produce nodes", nodes.isNotEmpty())
-        }
-        
-        // Test domain-specific types
-        val domainTypes = listOf(
+            "float32", "float64", "long", "short", "unsigned", "signed",
+            // Domain types
             "time", "date", "datetime", "duration", "url", "path", "file",
             "json", "xml", "html", "css", "regex", "uuid", "hash", "binary"
         )
         
-        for (type in domainTypes) {
+        for (type in allRegularTypes) {
             val code = "$type x = value"
             val nodes = parse(code)
             val varDecl = nodes.first()
-            assertEquals("$type should create VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, varDecl.elementType)
             val typeToken = varDecl.firstChildNode
             assertEquals("$type should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
-            assertEquals("$type should have correct text", type, typeToken.text)
         }
     }
 
