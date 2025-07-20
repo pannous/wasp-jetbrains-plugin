@@ -179,8 +179,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
 
     fun testMalformedFunctionCall() {
         val code = "function(arg1, arg2"
-        val nodes = parse(code)  // TODO SHOULD THROW?
-        // Parser should handle malformed input gracefully
+        val nodes = parse(code)
+        // Parser should handle malformed input gracefully - no throwing needed
+        // Malformed syntax should still produce AST nodes for error recovery
     }
 
     fun testSimpleAssignment() {
