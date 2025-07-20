@@ -94,9 +94,21 @@ Parser tests are located in `src/test/kotlin/com/pannous/wasp/WaspParserTest.kt`
 
 ### Commit Workflow
 After completing any coding task:
-1. **Always commit your changes** with a meaningful message describing what you implemented and why
-2. Use conventional commit format: `type: description` (e.g., `test: add boolean literal parsing test`, `feat: implement syntax highlighting for arrays`)
-3. Focus on the intent and purpose, not just the technical changes
-4. Use claude@pannous.com as author
-5. Do NOT sign the commits with Co-Authored … nor your name (claude)
-6. Commit immediately after successful completion of tasks
+1. **Always commit your changes** with meaningful messages describing what you implemented and why
+2. **Break large changes into small, focused commits** - each commit should represent a single logical change
+3. Use conventional commit format with scope indicators:
+   - `feat(minor):` - small additions that don't change architecture
+   - `feat(major):` - significant new capabilities  
+   - `arch:` - structural/architectural changes that touch multiple components
+   - `refactor:` - reorganizing without changing functionality
+   - `test:` - test-only changes
+   - `fix:` - bug fixes
+   - `chore:` - maintenance tasks
+4. Examples: `feat(minor): add null literal parsing`, `arch: restructure parser for assignments`, `test: add structural AST validation`
+5. Focus on the intent and purpose, not just the technical changes
+6. Use claude@pannous.com as author
+7. Do NOT sign the commits with Co-Authored … nor your name (claude)
+8. Commit immediately after successful completion of each focused task
+
+## Memories
+- wow

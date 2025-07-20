@@ -3,7 +3,8 @@ package com.pannous.wasp
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import com.intellij.testFramework.ParsingTestCase
-import org.opentest4j.AssertionFailedError
+import com.pannous.wasp.WaspElementTypes.ASSIGNMENT
+import com.pannous.wasp.WaspElementTypes.NULL_LITERAL
 
 class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     override fun getTestDataPath(): String = "src/test/resources/testData"
@@ -270,7 +271,7 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertTrue("AST should have child nodes", children.isNotEmpty())
         
         // Find the assignment node
-        val assignmentNode = children.find { it.elementType == WaspElementTypes.ASSIGNMENT }
+        val assignmentNode = children.find { it.elementType == ASSIGNMENT }
         assertNotNull("Should contain assignment node", assignmentNode)
         
         // Verify assignment structure
@@ -278,7 +279,7 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertTrue("Assignment should have child nodes", assignmentChildren.isNotEmpty())
         
         // Find the null literal node within the assignment
-        val nullNode = assignmentChildren.find { it.elementType == WaspElementTypes.NULL_LITERAL }
+        val nullNode = assignmentChildren.find { it.elementType == NULL_LITERAL }
         assertNotNull("Assignment should contain null literal node", nullNode)
         assertEquals("Null literal should have correct text", "null", nullNode!!.text)
     }
