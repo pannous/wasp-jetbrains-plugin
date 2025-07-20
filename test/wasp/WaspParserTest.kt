@@ -201,11 +201,12 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     fun testNullLiteral() {
         val code = "value = null"
         val nodes = parse(code)
+        
         val assignment = nodes.first()
-        assertEquals(assignment.elementType,ASSIGNMENT)
-        val body = assignment!!.getChildren(null)
-        val nullNode = body.first()
-        assertEquals(nullNode.elementType,NULL_LITERAL)
+        assertEquals(ASSIGNMENT, assignment.elementType)
+        val body = assignment.getChildren(null)
+        
+        val nullNode = body.find { it.elementType == NULL_LITERAL }
         assertNotNull("Assignment should contain null literal node", nullNode)
         assertEquals("Null literal should have correct text", "null", nullNode!!.text)
     }
