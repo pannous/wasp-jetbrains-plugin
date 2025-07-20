@@ -112,3 +112,4 @@ After completing any coding task:
 
 ## Memories
 - wow
+- I'm using speech recognition so you can always assume when you encounter an unexpected word which matches vaguely another word that makes sense that it was a misspelling
