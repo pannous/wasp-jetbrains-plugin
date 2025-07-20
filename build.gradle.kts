@@ -13,6 +13,15 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        kotlin.srcDirs("src/wasp")
+    }
+    test {
+        kotlin.srcDirs("test/wasp")
+    }
+}
+
 dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.opentest4j:opentest4j:1.3.0")

@@ -1,4 +1,4 @@
-package com.pannous.wasp
+package wasp
 
 import org.junit.Test
 import org.junit.Assert.*

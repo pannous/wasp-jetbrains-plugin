@@ -1,4 +1,4 @@
-package com.pannous.wasp
+package wasp
 
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
