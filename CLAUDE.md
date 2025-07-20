@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## CRITICAL COMMIT RULES - NEVER VIOLATE
+**NEVER add Co-Authored-By: Claude lines to commits under any circumstances**
+**NEVER sign commits with my name (claude) - use claude@pannous.com as author only**
+
 ## Project Overview
 This is a JetBrains IntelliJ IDEA plugin for the Wasp programing language https://github.com/pannous/wasp/, built with Kotlin and Gradle
 
