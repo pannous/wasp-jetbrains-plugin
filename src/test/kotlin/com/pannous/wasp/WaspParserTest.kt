@@ -263,10 +263,9 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
 
     fun testNullLiteral() {
         val code = "value = null"
-        val result = parseCode(code)
+        val children = parseCode(code)
         
         // Find the assignment node
-        val children = result!!.getChildren(null)
         val assignmentNode = children.find { it.elementType == ASSIGNMENT }
         assertNotNull("Should contain assignment node", assignmentNode)
         
@@ -280,7 +279,7 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertEquals("Null literal should have correct text", "null", nullNode!!.text)
     }
 
-    private fun parseCode(code: String): ASTNode? {
+    private fun parseCode(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
         
@@ -289,6 +288,6 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         val children = node!!.getChildren(null)
         assertTrue("AST should have child nodes", children.isNotEmpty())
         
-        return node
+        return children
     }
 }
