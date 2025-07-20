@@ -69,8 +69,13 @@ class WaspParser : PsiParser {
         if (builder.tokenType == Token.LPAREN) {
             parseArgumentList(builder)
             marker.done(WaspElementTypes.FUNCTION_CALL)
+        } else if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
+            // This is an assignment
+            builder.advanceLexer() // consume '='
+            parseExpression(builder)
+            marker.done(WaspElementTypes.ASSIGNMENT)
         } else {
-            // Check for assignment or other expressions
+            // Check for other expressions
             while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
                 parseExpression(builder)
             }
@@ -211,6 +216,7 @@ class WaspParser : PsiParser {
             }
             Token.STRING -> parseStringLiteral(builder)
             Token.NUMBER -> parseNumberLiteral(builder)
+            Token.NULL -> parseNullLiteral(builder)
             Token.OPERATOR -> builder.advanceLexer()
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
             Token.LBRACE -> parseMapLiteral(builder)
@@ -232,6 +238,12 @@ class WaspParser : PsiParser {
         val marker = builder.mark()
         builder.advanceLexer()
         marker.done(WaspElementTypes.NUMBER_LITERAL)
+    }
+
+    private fun parseNullLiteral(builder: PsiBuilder) {
+        val marker = builder.mark()
+        builder.advanceLexer()
+        marker.done(WaspElementTypes.NULL_LITERAL)
     }
 
     private fun parseArithmeticExpression(builder: PsiBuilder) {

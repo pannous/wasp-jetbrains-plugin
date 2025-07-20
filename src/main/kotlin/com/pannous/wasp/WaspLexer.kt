@@ -202,6 +202,7 @@ class WaspLexer : LexerBase() {
                 skipIdentifier()
                 val text = buffer.subSequence(tokenStart, tokenEnd).toString()
                 tokenType = when {
+                    text == "null" -> Token.NULL
                     KEYWORDS.contains(text) -> Token.KEYWORD
                     TYPES.contains(text) -> Token.TYPE
                     else -> Token.IDENTIFIER
