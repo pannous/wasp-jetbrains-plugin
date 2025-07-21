@@ -67,7 +67,7 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
 
         val expectedMethods = listOf(
             "parseFile", "parseStatement", "parseKeywordStatement",
-            "parseIdentifierStatement", "parseVariableDeclaration",
+            "parseIdentifierStatement", "parseTypeOrVariableDeclaration",
             "parseArrayLiteral", "parseMapLiteral", "parseExpression",
             "parseStringLiteral", "parseNumberLiteral", "parseArithmeticExpression",
             "parseFunctionDeclaration"
@@ -196,6 +196,31 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     fun testBooleanLiteral() {
         val code = "isValid = true"
         val nodes = parse(code)
+    }
+
+    fun testNoneLiteral() {
+        val code = "None"
+        val nodes = parse(code)
+        val none = nodes.first()
+        assertEquals("None literal should be parsed", WaspElementTypes.NULL_LITERAL, none.elementType)
+    }
+
+    fun testValueTypesStandalone() {
+        // Test that value types can appear standalone in root context
+        val standaloneTests = mapOf(
+            "Int" to WaspElementTypes.TYPE_LITERAL,
+            "String" to WaspElementTypes.TYPE_LITERAL,
+            "MyClass" to WaspElementTypes.TYPE_LITERAL,
+            "null" to WaspElementTypes.NULL_LITERAL,
+            "nil" to WaspElementTypes.NULL_LITERAL,
+            "None" to WaspElementTypes.NULL_LITERAL
+        )
+        
+        for ((value, expectedType) in standaloneTests) {
+            val nodes = parse(value)
+            val valueNode = nodes.first()
+            assertEquals("$value should create $expectedType when standalone", expectedType, valueNode.elementType)
+        }
     }
 
     fun testNullLiteral() {
@@ -343,18 +368,11 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
             "XMLParser",
             "Int"
         )
-
         for (identifier in capitalizedIdentifiers) {
             val code = "$identifier x = value"
             val nodes = parse(code)
             val typeNode = nodes.first()
-            assertEquals(
-                "$identifier should create VARIABLE_DECLARATION",
-                WaspElementTypes.VARIABLE_DECLARATION,
-                typeNode.elementType
-            )
-            
-            // Verify the first token is tokenized as TYPE
+            assertEquals(WaspElementTypes.VARIABLE_DECLARATION, typeNode.elementType)
             val typeToken = typeNode.firstChildNode
             assertEquals("$identifier should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
         }
