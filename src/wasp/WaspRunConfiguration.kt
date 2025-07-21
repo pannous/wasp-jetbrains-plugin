@@ -15,15 +15,9 @@ class WaspRunConfiguration(
     project: Project,
     factory: ConfigurationFactory,
     name: String
-) : RunConfigurationBase<WaspRunConfigurationOptions>(project, factory, name) {
+) : RunConfigurationBase<RunConfigurationOptions>(project, factory, name) {
     
-    public override fun getOptions(): WaspRunConfigurationOptions {
-        return super.getOptions() as WaspRunConfigurationOptions
-    }
-    
-    var scriptPath: String
-        get() = options.scriptPath
-        set(value) { options.scriptPath = value }
+    var scriptPath: String = ""
     
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
         return WaspRunConfigurationEditor()
@@ -59,8 +53,4 @@ class WaspRunConfiguration(
         super.writeExternal(element)
         element.setAttribute("scriptPath", scriptPath)
     }
-}
-
-class WaspRunConfigurationOptions : RunConfigurationOptions() {
-    var scriptPath: String = ""
 }
