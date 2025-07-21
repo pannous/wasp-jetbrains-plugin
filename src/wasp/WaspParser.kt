@@ -28,9 +28,10 @@ class WaspParser : PsiParser {
         when (builder.tokenType) {
             Token.KEYWORD -> parseKeywordStatement(builder)
             Token.IDENTIFIER -> parseIdentifierStatement(builder)
-            Token.TYPE -> parseVariableDeclaration(builder)
+            Token.TYPE -> parseTypeOrVariableDeclaration(builder)
             Token.STRING -> parseStringLiteral(builder)
             Token.NUMBER -> parseArithmeticExpression(builder)
+            Token.NULL -> parseNullLiteral(builder)
             Token.LBRACE -> parseMapLiteral(builder)
             Token.LBRACKET -> parseArrayLiteral(builder)
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
@@ -91,24 +92,26 @@ class WaspParser : PsiParser {
     }
 
 
-    private fun parseVariableDeclaration(builder: PsiBuilder) {
+    private fun parseTypeOrVariableDeclaration(builder: PsiBuilder) {
         val marker = builder.mark()
         builder.advanceLexer() // consume type
 
-        // Parse variable name
+        // Check if this is a standalone type or a variable declaration
         if (builder.tokenType == Token.IDENTIFIER) {
-            builder.advanceLexer()
+            // This is a variable declaration: "Int x = value"
+            builder.advanceLexer() // consume variable name
+
+            // Parse assignment
+            if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
+                builder.advanceLexer()
+                parseExpression(builder)
+            }
+
+            marker.done(WaspElementTypes.VARIABLE_DECLARATION)
         } else {
-            builder.error("Expected variable name")
+            // This is a standalone type: "Int"
+            marker.done(WaspElementTypes.TYPE_LITERAL)
         }
-
-        // Parse assignment
-        if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
-            builder.advanceLexer()
-            parseExpression(builder)
-        }
-
-        marker.done(WaspElementTypes.VARIABLE_DECLARATION)
     }
 
     private fun parseFunctionDeclaration(builder: PsiBuilder, marker: PsiBuilder.Marker) {

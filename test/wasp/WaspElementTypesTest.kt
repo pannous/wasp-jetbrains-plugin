@@ -9,6 +9,7 @@ class WaspElementTypesTest {
     fun testAllElementTypesNotNull() {
         assertNotNull(WaspElementTypes.KEYWORD_STATEMENT)
         assertNotNull(WaspElementTypes.IDENTIFIER_STATEMENT)
+        assertNotNull(WaspElementTypes.TYPE_LITERAL)
         assertNotNull(WaspElementTypes.VARIABLE_DECLARATION)
         assertNotNull(WaspElementTypes.FUNCTION_CALL)
         assertNotNull(WaspElementTypes.ARGUMENT_LIST)
@@ -27,6 +28,7 @@ class WaspElementTypesTest {
     fun testElementTypeNames() {
         assertEquals("KEYWORD_STATEMENT", WaspElementTypes.KEYWORD_STATEMENT.toString())
         assertEquals("IDENTIFIER_STATEMENT", WaspElementTypes.IDENTIFIER_STATEMENT.toString())
+        assertEquals("TYPE_LITERAL", WaspElementTypes.TYPE_LITERAL.toString())
         assertEquals("VARIABLE_DECLARATION", WaspElementTypes.VARIABLE_DECLARATION.toString())
         assertEquals("FUNCTION_CALL", WaspElementTypes.FUNCTION_CALL.toString())
         assertEquals("ARGUMENT_LIST", WaspElementTypes.ARGUMENT_LIST.toString())
