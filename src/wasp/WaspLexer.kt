@@ -26,38 +26,48 @@ class WaspLexer : LexerBase() {
             // Collection types
             "array", "list", "set", "map", "dict", "tuple", "vector", "matrix","node",
             "Array", "Object",
-            // Reference types
-            "object", "class", "interface", "struct", "union", "enum",
+            "Object", "Interface", "Struct", "Union", "Enum",
+            // Reference types are also used as keywords in some languages:
+//            "object", "class", "interface", "struct", "union", "enum",
             "Class", "Type",
             // Function types
-            "Function", "func", "lambda", "closure", "method", "procedure",
+            "Function", "Lambda", "Closure", // "method", "procedure", ⚠️ also used as keyword!
             // Memory types
-            "pointer", "reference", "ref",  "externref", "ptr", "address",
+//            "pointer", "reference", "address",
+            "Pointer", "Reference", "Address", //  ⚠️ ref also used as keyword!
             // Numeric types
             "number", "integer", "decimal", "fraction", "complex", "rational",
             "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64",
             "float32", "float64", "long", "short", "unsigned", "signed",
-            // Special types
-            "void", "null", "nil", "nothing", "unit", "any", "auto", "var",
-            "const", "static", "final", "readonly", "mutable", "immutable",
+
             // Domain-specific types
             "time", "date", "datetime", "duration", "url", "path", "file",
             "json", "xml", "html", "css", "regex", "uuid", "hash", "binary"
         )
 
-        private val KEYWORDS = setOf(
-            "def","fun","fn","function", // DONE: function (also) as type in TYPES!? -> added Function
-            "extern","export",
-            "if", "else", "elif", "for", "while", "in", "not",
-            "and", "or", "def", "class", "return", "import", "include","use", "from", "as", "pass",
-            "break", "continue", "try", "except", "finally", "raise", "with", "yield",
-            "lambda", "global", "True", "False", "None", "nil", "null", "is", "assert",
-            "del", "fun", "in", "on", "of", "to", "with", "while", "it", "that", "which",
-            "type", "id", "π", "τ"
+        private val KEYWORDS = setOf( // some might be reserved without any function
+            "to","def","define","method","lambda","fun","func","fn","function", // vs Function type
+            "if", "then", "else", "elif", "otherwise",
+            "not", "and", "or", "xor",
+            "switch","match", "case","default",
+            "class", "type", "interface", "struct", "union", "enum",
+            "return", "yield", "break",
+            "break", "continue", "yield", "goto",
+            "try", "except", "finally", "raise", "with",
+            "import", "include","use", "from",  "pass",
+            "extern","export", "externref", "ptr", "ref",
+            "global",  "native", "inline", "macro",
+            "is", "in", "as", "on", "of", "to", "with", "assert", "del", "free", "delete", "await", "async",
+            "while","when", "do","until", "loop", "repeat", "for", "foreach", "each", "every",
+        // Special types
+            "void", "null", "nil", "nothing", "unit", "any", "auto", "var",
+            "const", "static", "final", "readonly", "mutable", "immutable",
+            "True", "False", "None", "nil", "null", "π", "τ",
+            "type",  "id", "it", "that", "which",
         )
 
         private val OPERATORS = setOf(
-            "+", "-", "*", "/", "//", "%", "**", "=", "==", "!=", "<", ">", "<=", ">=",
+            "+", "-", "*", "/", "//", "%", "**", "=", "==", "!=", "<", ">", "->", "<=", ">=",
             "<<", ">>", "&", "|", "^", "~", "+=", "-=", "*=", "/=", "//=", "%=", "**=",
             "&=", "|=", "^=", "<<=", ">>=", "≈", "√", "ʃ", "×", "⁰", "⁻¹", "²", "³", "∈", "∊"
         )
@@ -210,6 +220,7 @@ class WaspLexer : LexerBase() {
                     NULL_LITERALS.contains(text) -> Token.NULL
                     KEYWORDS.contains(text) -> Token.KEYWORD
                     TYPES.contains(text) -> Token.TYPE
+                    text.isNotEmpty() && text[0].isUpperCase() -> Token.TYPE
                     else -> Token.IDENTIFIER
                 }
             }
