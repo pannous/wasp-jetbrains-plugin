@@ -1,36 +1,66 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.pannous.wasp</id>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.pannous.wasp-jetbrains-plugin</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>Wasp Language Support</name>
-    <vendor email="info@pannous.com" url="https://pannous.com">Pannous</vendor>
 
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="support@pannous.com" url="https://github.com/pannous/wasp/">Pannous</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        Wasp programming language support for IntelliJ IDEA.
-        Provides syntax highlighting, code completion, and other IDE features for the Wasp language.
-    ]]></description>
+    Wasp language support for IntelliJ IDEA and other JetBrains IDEs.<br>
+    <em>Features syntax highlighting, code completion, and file type support for Wasp files (.wasp)</em>
+  ]]></description>
 
-    <version>1.0-SNAPSHOT</version>
-
-    <idea-version since-build="222" until-build="253.*"/>
-
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
 
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Language Support -->
+        <!-- File type registration -->
         <fileType name="Wasp" 
                   implementationClass="wasp.WaspFileType" 
                   fieldName="INSTANCE" 
                   language="Wasp" 
                   extensions="wasp"/>
         
+        <!-- Language registration -->
         <lang.parserDefinition language="Wasp" 
                                implementationClass="wasp.WaspParserDefinition"/>
         
+        <!-- Syntax highlighter -->
         <lang.syntaxHighlighterFactory language="Wasp" 
                                        implementationClass="wasp.WaspSyntaxHighlighterFactory"/>
         
-        <colorSettingsPage implementation="wasp.WaspColorSettingsPage"/>
-        
+        <!-- Code folding -->
         <lang.foldingBuilder language="Wasp" 
                              implementationClass="wasp.WaspFoldingBuilder"/>
+        
+        <!-- Run configuration -->
+        <configurationType implementation="wasp.WaspRunConfigurationType"/>
+        
+        <!-- Run configuration producer -->
+        <runConfigurationProducer implementation="wasp.WaspRunConfigurationProducer"/>
+        
+        <!-- Color settings page -->
+        <colorSettingsPage implementation="wasp.WaspColorSettingsPage"/>
     </extensions>
+    
+    <!-- Actions -->
+    <actions>
+        <!-- Run Wasp file action -->
+        <action id="wasp.run" class="wasp.WaspRunAction" text="Run Wasp File">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+            <add-to-group group-id="RunMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>

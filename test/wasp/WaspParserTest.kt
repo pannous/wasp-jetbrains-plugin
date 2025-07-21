@@ -57,7 +57,7 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
     }
 
     fun testStringLiteral() {
-        val code = "\"hello world\""
+        val code = "\"hello world!\""
         val nodes = parse(code)
     }
 
