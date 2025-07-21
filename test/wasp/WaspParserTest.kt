@@ -332,6 +332,34 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         }
     }
 
+
+    fun testCapitalizedIdentifiersAsTypes() {
+        // Test that identifiers starting with capital letters are tokenized as TYPE and create VARIABLE_DECLARATION
+        val capitalizedIdentifiers = listOf(
+            "MyClass",
+            "PersonType",
+            "DatabaseConnection",
+            "HTTPClient",
+            "XMLParser",
+            "Int"
+        )
+
+        for (identifier in capitalizedIdentifiers) {
+            val code = "$identifier x = value"
+            val nodes = parse(code)
+            val typeNode = nodes.first()
+            assertEquals(
+                "$identifier should create VARIABLE_DECLARATION",
+                WaspElementTypes.VARIABLE_DECLARATION,
+                typeNode.elementType
+            )
+            
+            // Verify the first token is tokenized as TYPE
+            val typeToken = typeNode.firstChildNode
+            assertEquals("$identifier should be tokenized as TYPE", Token.TYPE, typeToken.elementType)
+        }
+    }
+
     fun testFunctionKeyword2() {
         // Test malformed function declaration (should still create FUNCTION_DECLARATION but with errors)
         val code = "function x = value"
@@ -352,27 +380,6 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertEquals("Function declaration should be parsed correctly", WaspElementTypes.FUNCTION_DECLARATION, functionNode.elementType)
     }
 
-    fun testCapitalizedIdentifiersAsTypes() {
-        // Test that identifiers starting with capital letters are treated as TYPE_STATEMENT
-        val capitalizedIdentifiers = listOf(
-            "MyClass",
-            "PersonType", 
-            "DatabaseConnection",
-            "HTTPClient",
-            "XMLParser"
-        )
-        
-        for (identifier in capitalizedIdentifiers) {
-            val code = "$identifier x = value"
-            val nodes = parse(code)
-            val typeNode = nodes.first()
-            assertEquals(
-                "$identifier should create TYPE_STATEMENT",
-                WaspElementTypes.TYPE_STATEMENT,
-                typeNode.elementType
-            )
-        }
-    }
 
     fun testLowercaseIdentifiersStayAsIdentifiers() {
         // Test that lowercase identifiers remain as IDENTIFIER_STATEMENT or other appropriate types

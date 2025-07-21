@@ -5,7 +5,6 @@ import com.intellij.psi.tree.IElementType
 object WaspElementTypes {
     val KEYWORD_STATEMENT = IElementType("KEYWORD_STATEMENT", WaspLanguage.INSTANCE)
     val IDENTIFIER_STATEMENT = IElementType("IDENTIFIER_STATEMENT", WaspLanguage.INSTANCE)
-    val TYPE_STATEMENT = IElementType("TYPE_STATEMENT", WaspLanguage.INSTANCE)
     val VARIABLE_DECLARATION = IElementType("VARIABLE_DECLARATION", WaspLanguage.INSTANCE)
     val FUNCTION_CALL = IElementType("FUNCTION_CALL", WaspLanguage.INSTANCE)
     val ARGUMENT_LIST = IElementType("ARGUMENT_LIST", WaspLanguage.INSTANCE)
