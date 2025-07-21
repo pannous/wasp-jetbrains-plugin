@@ -70,6 +70,21 @@ class WaspParser : PsiParser {
 
     private fun parseIdentifierStatement(builder: PsiBuilder) {
         val marker = builder.mark()
+        val identifierText = builder.tokenText
+        
+        // Check if identifier starts with capital letter - treat as TYPE
+        if (identifierText != null && identifierText.isNotEmpty() && identifierText[0].isUpperCase()) {
+            builder.advanceLexer() // consume identifier
+            
+            // Parse the rest of the type statement
+            while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
+                parseExpression(builder)
+            }
+            
+            marker.done(WaspElementTypes.TYPE_STATEMENT)
+            return
+        }
+        
         builder.advanceLexer() // consume identifier
 
         // Check for function call
