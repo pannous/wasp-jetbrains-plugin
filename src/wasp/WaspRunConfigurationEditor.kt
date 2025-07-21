@@ -14,7 +14,7 @@ class WaspRunConfigurationEditor : SettingsEditor<WaspRunConfiguration>() {
     init {
         val fileChooser = FileChooserDescriptor(true, false, false, false, false, false)
         fileChooser.withFileFilter { it.extension == "wasp" }
-        scriptPathField.addBrowseFolderListener("Select Wasp File", null, null, fileChooser)
+        scriptPathField.addBrowseFolderListener("Select Wasp File", "", null, fileChooser)
     }
     
     override fun createEditor(): JComponent {
