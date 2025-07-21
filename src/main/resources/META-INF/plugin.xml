@@ -1,0 +1,36 @@
+<idea-plugin>
+    <id>com.pannous.wasp</id>
+    <name>Wasp Language Support</name>
+    <vendor email="info@pannous.com" url="https://pannous.com">Pannous</vendor>
+
+    <description><![CDATA[
+        Wasp programming language support for IntelliJ IDEA.
+        Provides syntax highlighting, code completion, and other IDE features for the Wasp language.
+    ]]></description>
+
+    <version>1.0-SNAPSHOT</version>
+
+    <idea-version since-build="222" until-build="253.*"/>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Language Support -->
+        <fileType name="Wasp" 
+                  implementationClass="wasp.WaspFileType" 
+                  fieldName="INSTANCE" 
+                  language="Wasp" 
+                  extensions="wasp"/>
+        
+        <lang.parserDefinition language="Wasp" 
+                               implementationClass="wasp.WaspParserDefinition"/>
+        
+        <lang.syntaxHighlighterFactory language="Wasp" 
+                                       implementationClass="wasp.WaspSyntaxHighlighterFactory"/>
+        
+        <colorSettingsPage implementation="wasp.WaspColorSettingsPage"/>
+        
+        <lang.foldingBuilder language="Wasp" 
+                             implementationClass="wasp.WaspFoldingBuilder"/>
+    </extensions>
+</idea-plugin>
