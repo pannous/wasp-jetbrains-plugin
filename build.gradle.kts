@@ -68,6 +68,7 @@ tasks.named("processResources") {
 dependencies {
     intellijPlatform {
         local("/Applications/IntelliJ IDEA.app/Contents")
+        plugin("com.redhat.devtools.lsp4ij", "0.6.0")
         testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
     }
     testImplementation("junit:junit:4.13.2")
