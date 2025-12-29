@@ -52,6 +52,9 @@
         
         <!-- Color settings page -->
         <colorSettingsPage implementation="wasp.WaspColorSettingsPage"/>
+
+        <!-- Wiki-style link navigation for markdown files -->
+        <psi.referenceContributor language="TEXT" implementation="wasp.WikiLinkReferenceContributor"/>
     </extensions>
     
     <!-- Actions -->
