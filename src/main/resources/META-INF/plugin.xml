@@ -21,6 +21,7 @@
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.redhat.devtools.lsp4ij</depends>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -55,6 +56,17 @@
 
         <!-- Wiki-style link navigation for markdown files -->
         <psi.referenceContributor implementation="wasp.WikiLinkReferenceContributor"/>
+    </extensions>
+
+    <!-- LSP4IJ Extensions -->
+    <extensions defaultExtensionNs="com.redhat.devtools.lsp4ij">
+        <server id="waspLanguageServer"
+                name="Wasp Language Server"
+                factoryClass="wasp.WaspLanguageServerFactory">
+            <description>Language Server for Wasp</description>
+        </server>
+        <languageMapping language="Wasp"
+                        serverId="waspLanguageServer"/>
     </extensions>
     
     <!-- Actions -->
