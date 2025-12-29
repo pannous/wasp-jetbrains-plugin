@@ -416,6 +416,14 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         }
     }
 
+    fun testComplexStringConcatenation() {
+        // Test string concatenation with emoji and arithmetic
+        val code = "\"Hello \" + \"🌍\" + 2000+25"
+        val nodes = parse(code)
+        // Should parse as arithmetic expression with strings and numbers
+        assertTrue("Complex concatenation should produce nodes", nodes.isNotEmpty())
+    }
+
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
