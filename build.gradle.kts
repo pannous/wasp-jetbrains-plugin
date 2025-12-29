@@ -34,6 +34,37 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.register<Copy>("bundleWaspExecutable") {
+    description = "Bundle the latest wasp executable with the plugin"
+    group = "build"
+
+    val waspSourcePath = "/Users/me/wasp/cmake-build-debug/wasp"
+    val waspSource = file(waspSourcePath)
+
+    if (waspSource.exists()) {
+        from(waspSource)
+        into("src/main/resources/bin/mac/arm")
+        filePermissions {
+            unix("rwxr-xr-x")
+        }
+
+        // Also copy to mac root for fallback
+        doLast {
+            copy {
+                from(waspSource)
+                into("src/main/resources/bin/mac")
+                filePermissions {
+                    unix("rwxr-xr-x")
+                }
+            }
+        }
+    }
+}
+
+tasks.named("processResources") {
+    dependsOn("bundleWaspExecutable")
+}
+
 dependencies {
     intellijPlatform {
         local("/Applications/IntelliJ IDEA.app/Contents")

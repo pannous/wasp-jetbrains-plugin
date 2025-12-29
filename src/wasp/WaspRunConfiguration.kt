@@ -33,10 +33,10 @@ class WaspRunConfiguration(
         return object : CommandLineState(environment) {
             override fun startProcess(): OSProcessHandler {
                 val commandLine = GeneralCommandLine()
-                commandLine.exePath = "wasp"
+                commandLine.exePath = WaspExecutableFinder.findWaspExecutable()
                 commandLine.addParameter(scriptPath)
                 commandLine.workDirectory = environment.project.basePath?.let { java.io.File(it) }
-                
+
                 return ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
             }
         }
