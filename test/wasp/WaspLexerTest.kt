@@ -116,4 +116,27 @@ class WaspLexerTest {
         // Should handle special characters gracefully
         assertNotNull(tokens)
     }
+
+    @Test
+    fun testEmojiInString() {
+        val tokens = tokenize("\"🌍\"")
+        val stringTokens = tokens.filter { it.first == Token.STRING }
+        assertTrue("Should tokenize emoji string", stringTokens.isNotEmpty())
+        assertEquals("Should capture full emoji string", "\"🌍\"", stringTokens[0].second)
+    }
+
+    @Test
+    fun testComplexStringConcatenation() {
+        val code = "\"Hello \" + \"🌍\" + 2000+25"
+        val tokens = tokenize(code)
+
+        // Print tokens for debugging
+        println("Tokens for: $code")
+        tokens.forEach { println("  ${it.first}: '${it.second}'") }
+
+        val tokenTypes = tokens.map { it.first }
+        assertTrue("Should have string tokens", tokenTypes.contains(Token.STRING))
+        assertTrue("Should have operator tokens", tokenTypes.contains(Token.OPERATOR))
+        assertTrue("Should have number tokens", tokenTypes.contains(Token.NUMBER))
+    }
 }
