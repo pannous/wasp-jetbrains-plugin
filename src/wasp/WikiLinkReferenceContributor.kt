@@ -21,7 +21,8 @@ class WikiLinkReferenceContributor : PsiReferenceContributor() {
 
 class WikiLinkReferenceProvider : PsiReferenceProvider() {
     companion object {
-        private val WIKI_LINK_PATTERN = Regex("""\[\[([^\]]+)\]\]""")
+        // Support both [[other]] and {{other}} syntax for debugging
+        private val WIKI_LINK_PATTERN = Regex("""(?:\[\[([^\]]+)\]\]|\{\{([^}]+)\}\})""")
     }
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
@@ -33,13 +34,14 @@ class WikiLinkReferenceProvider : PsiReferenceProvider() {
         val text = element.text ?: return PsiReference.EMPTY_ARRAY
         val references = mutableListOf<PsiReference>()
 
-        // Find all [[...]] patterns in the text
+        // Find all [[...]] and {{...}} patterns in the text
         WIKI_LINK_PATTERN.findAll(text).forEach { matchResult ->
-            val linkText = matchResult.groupValues[1]
+            // Get the link text from whichever group matched
+            val linkText = matchResult.groupValues[1].ifEmpty { matchResult.groupValues[2] }
             val startOffset = matchResult.range.first
             val endOffset = matchResult.range.last + 1
 
-            // Create a text range for just the link name (excluding [[ and ]])
+            // Create a text range for just the link name (excluding [[ ]] or {{ }})
             val textRange = TextRange(startOffset + 2, endOffset - 2)
 
             references.add(WikiLinkReference(element, linkText, textRange))
