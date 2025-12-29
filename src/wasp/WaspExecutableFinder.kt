@@ -47,24 +47,22 @@ object WaspExecutableFinder {
                 else -> return null
             }
 
-            val resource = classLoader.getResource(platformPath) ?: return null
-            val resourcePath = resource.path
+            val resource = classLoader.getResourceAsStream(platformPath) ?: return null
 
-            // Handle jar:file: URLs
-            val path = if (resourcePath.startsWith("file:")) {
-                resourcePath.substring(5)
-            } else {
-                resourcePath
+            // Extract to temp file (needed when running from JAR)
+            val tempDir = File(System.getProperty("java.io.tmpdir"), "wasp-plugin")
+            tempDir.mkdirs()
+            val tempFile = File(tempDir, "wasp")
+
+            tempFile.outputStream().use { output ->
+                resource.copyTo(output)
             }
 
-            val execFile = File(path)
-            if (execFile.exists()) {
-                // Ensure it's executable
-                if (!execFile.canExecute()) {
-                    execFile.setExecutable(true)
-                }
-                return execFile.absolutePath
-            }
+            // Make executable
+            tempFile.setExecutable(true)
+            LOG.info("Extracted bundled wasp executable to: ${tempFile.absolutePath}")
+            return tempFile.absolutePath
+
         } catch (e: Exception) {
             LOG.warn("Failed to find bundled wasp executable", e)
         }
