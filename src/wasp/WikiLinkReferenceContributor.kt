@@ -11,8 +11,9 @@ import com.intellij.util.ProcessingContext
  */
 class WikiLinkReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
+        // Register for all PSI elements to catch wiki links in any context
         registrar.registerReferenceProvider(
-            PlatformPatterns.psiElement(PsiPlainText::class.java),
+            PlatformPatterns.psiElement(),
             WikiLinkReferenceProvider()
         )
     }
@@ -24,7 +25,12 @@ class WikiLinkReferenceProvider : PsiReferenceProvider() {
     }
 
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-        val text = element.text
+        // Skip if element is not a leaf (to avoid processing container elements)
+        if (element.firstChild != null) {
+            return PsiReference.EMPTY_ARRAY
+        }
+
+        val text = element.text ?: return PsiReference.EMPTY_ARRAY
         val references = mutableListOf<PsiReference>()
 
         // Find all [[...]] patterns in the text
