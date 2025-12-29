@@ -52,3 +52,4 @@ This part should currently not be read by Claude code because it should be comme
 OR
   ./gradlew test --debug --stacktrace
 -->
+
