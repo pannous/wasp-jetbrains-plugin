@@ -15,6 +15,7 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
     Wasp language support for IntelliJ IDEA and other JetBrains IDEs.<br>
+    <em>Version 1.0-SNAPSHOT</em><br>
     <em>Features syntax highlighting, code completion, and file type support for Wasp files (.wasp)</em>
   ]]></description>
 
