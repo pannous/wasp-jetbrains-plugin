@@ -5,7 +5,8 @@ set -e
 # Configuration
 PLUGIN_NAME="wasp-jetbrains-plugin"
 BUILD_DIR="build/distributions"
-PLUGIN_ZIP="${BUILD_DIR}/${PLUGIN_NAME}-1.0-SNAPSHOT.zip"
+# Use the latest zip file in distributions (handles versioned names)
+PLUGIN_ZIP=$(ls -t ${BUILD_DIR}/${PLUGIN_NAME}-*.zip 2>/dev/null | head -1)
 
 # Determine which IDE to install to
 IDE="${1:-CLion}"
