@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+import java.util.Properties
 
 plugins {
     id("java")
@@ -7,7 +8,23 @@ plugins {
 }
 
 group = "com.pannous"
-version = "1.0-SNAPSHOT"
+
+// Auto-increment version from version.properties
+val versionProps = Properties().apply {
+    file("version.properties").inputStream().use { load(it) }
+}
+val major = versionProps.getProperty("major")
+val minor = versionProps.getProperty("minor")
+val patch = versionProps.getProperty("patch").toInt()
+
+// Increment patch version on each build
+val newPatch = patch + 1
+versionProps.setProperty("patch", newPatch.toString())
+file("version.properties").outputStream().use {
+    versionProps.store(it, "Auto-incremented on build")
+}
+
+version = "$major.$minor.$newPatch"
 
 kotlin {
     jvmToolchain(21)
