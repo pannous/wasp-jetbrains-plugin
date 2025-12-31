@@ -43,7 +43,8 @@
                   binary="true"/>
 
         <!-- WASM file editor provider -->
-        <fileEditorProvider implementation="wasp.WasmEditorProvider"/>
+        <!-- Deactivated: Use run configurations instead -->
+        <!-- <fileEditorProvider implementation="wasp.WasmEditorProvider"/> -->
 
         <!-- Language registration -->
         <lang.parserDefinition language="Wasp"
