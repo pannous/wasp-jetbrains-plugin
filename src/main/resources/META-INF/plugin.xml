@@ -29,30 +29,46 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <!-- File type registration -->
-        <fileType name="Wasp" 
-                  implementationClass="wasp.WaspFileType" 
-                  fieldName="INSTANCE" 
-                  language="Wasp" 
+        <fileType name="Wasp"
+                  implementationClass="wasp.WaspFileType"
+                  fieldName="INSTANCE"
+                  language="Wasp"
                   extensions="wasp"/>
-        
+
+        <!-- WASM file type -->
+        <fileType name="WASM"
+                  implementationClass="wasp.WasmFileType"
+                  fieldName="INSTANCE"
+                  extensions="wasm"
+                  binary="true"/>
+
+        <!-- WASM file editor provider -->
+        <fileEditorProvider implementation="wasp.WasmEditorProvider"/>
+
         <!-- Language registration -->
-        <lang.parserDefinition language="Wasp" 
+        <lang.parserDefinition language="Wasp"
                                implementationClass="wasp.WaspParserDefinition"/>
-        
+
         <!-- Syntax highlighter -->
-        <lang.syntaxHighlighterFactory language="Wasp" 
+        <lang.syntaxHighlighterFactory language="Wasp"
                                        implementationClass="wasp.WaspSyntaxHighlighterFactory"/>
-        
+
         <!-- Code folding -->
-        <lang.foldingBuilder language="Wasp" 
+        <lang.foldingBuilder language="Wasp"
                              implementationClass="wasp.WaspFoldingBuilder"/>
-        
+
         <!-- Run configuration -->
         <configurationType implementation="wasp.WaspRunConfigurationType"/>
-        
+
         <!-- Run configuration producer -->
         <runConfigurationProducer implementation="wasp.WaspRunConfigurationProducer"/>
-        
+
+        <!-- WASM run configuration -->
+        <configurationType implementation="wasp.WasmRunConfigurationType"/>
+
+        <!-- WASM run configuration producer -->
+        <runConfigurationProducer implementation="wasp.WasmRunConfigurationProducer"/>
+
         <!-- Color settings page -->
         <colorSettingsPage implementation="wasp.WaspColorSettingsPage"/>
 
@@ -75,6 +91,13 @@
     <actions>
         <!-- Run Wasp file action -->
         <action id="wasp.run" class="wasp.WaspRunAction" text="Run Wasp File">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
+            <add-to-group group-id="RunMenu" anchor="first"/>
+        </action>
+
+        <!-- Run WASM file action -->
+        <action id="wasm.run" class="wasp.WasmRunAction" text="Run WASM File">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="first"/>
             <add-to-group group-id="RunMenu" anchor="first"/>
