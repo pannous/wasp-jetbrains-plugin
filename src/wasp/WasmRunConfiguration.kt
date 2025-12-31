@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.InvalidDataException
 import com.intellij.openapi.util.WriteExternalException
 import org.jdom.Element
-import java.io.File
 
 class WasmRunConfiguration(
     project: Project,
@@ -28,7 +27,7 @@ class WasmRunConfiguration(
         if (scriptPath.isBlank()) {
             throw RuntimeConfigurationException("Please specify a WASM file to run")
         }
-        val file = File(scriptPath)
+        val file = java.io.File(scriptPath)
         if (!file.exists()) {
             throw RuntimeConfigurationException("WASM file does not exist: $scriptPath")
         }
@@ -38,31 +37,13 @@ class WasmRunConfiguration(
         return object : CommandLineState(environment) {
             override fun startProcess(): OSProcessHandler {
                 val commandLine = GeneralCommandLine()
-                commandLine.exePath = findWasmtime()
+                commandLine.exePath = WaspExecutableFinder.findWaspExecutable()
                 commandLine.addParameter(scriptPath)
-                commandLine.workDirectory = environment.project.basePath?.let { File(it) }
+                commandLine.workDirectory = environment.project.basePath?.let { java.io.File(it) }
 
                 return ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine)
             }
         }
-    }
-
-    private fun findWasmtime(): String {
-        val locations = listOf(
-            System.getProperty("user.home") + "/.wasmtime/bin/wasmtime",
-            "/opt/homebrew/bin/wasmtime",
-            "/usr/local/bin/wasmtime",
-            "/usr/bin/wasmtime"
-        )
-
-        for (location in locations) {
-            val file = File(location)
-            if (file.exists() && file.canExecute()) {
-                return location
-            }
-        }
-
-        return "wasmtime"
     }
 
     @Throws(InvalidDataException::class)
