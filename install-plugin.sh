@@ -70,16 +70,16 @@ done
 echo ""
 echo "✨ Installation complete!"
 echo ""
-echo "🔄 Restarting IntelliJ IDEA..."
+echo "🔄 Restarting RustRover..."
 
-# Kill IntelliJ IDEA to ensure plugin is loaded
-pkill -f "IntelliJ IDEA" 2>/dev/null || true
+# Kill RustRover to ensure plugin is loaded
+pkill -f "RustRover" 2>/dev/null || true
 sleep 2
 
-# Restart IntelliJ IDEA if it exists
-if [ -d "/Applications/IntelliJ IDEA.app" ]; then
-    echo "   Starting IntelliJ IDEA..."
-    open -a "IntelliJ IDEA" 2>/dev/null || echo "   ℹ️  IntelliJ IDEA failed to start"
+# Restart RustRover if it exists
+if [ -d "/Applications/RustRover.app" ]; then
+    echo "   Starting RustRover..."
+    open -a "RustRover" 2>/dev/null || echo "   ℹ️  RustRover failed to start"
 fi
 
 echo ""
