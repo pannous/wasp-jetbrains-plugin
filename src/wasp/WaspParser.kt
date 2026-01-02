@@ -151,25 +151,19 @@ class WaspParser : PsiParser {
     }
 
     private fun parseFunctionDeclaration(builder: PsiBuilder, marker: PsiBuilder.Marker) {
-        // Parse function name
+        // Parse function name (optional - be permissive)
         if (builder.tokenType == Token.IDENTIFIER) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected function name")
         }
 
-        // Parse parameter list
+        // Parse parameter list (optional - be permissive)
         if (builder.tokenType == Token.LPAREN) {
             parseArgumentList(builder)
-        } else {
-            builder.error("Expected '(' after function name")
         }
 
-        // Parse function body
+        // Parse function body (optional - be permissive)
         if (builder.tokenType == Token.LBRACE) {
             parseBlock(builder, Token.RBRACE)
-        } else {
-            builder.error("Expected '{' for function body")
         }
 
         marker.done(WaspElementTypes.FUNCTION_DECLARATION)
@@ -188,10 +182,9 @@ class WaspParser : PsiParser {
             }
         }
 
+        // Consume closing bracket if present (be permissive if missing)
         if (builder.tokenType == Token.RBRACKET) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected ']'")
         }
 
         marker.done(WaspElementTypes.ARRAY_LITERAL)
@@ -210,10 +203,9 @@ class WaspParser : PsiParser {
             }
         }
 
+        // Consume closing brace if present (be permissive if missing)
         if (builder.tokenType == Token.RBRACE) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected '}'")
         }
 
         marker.done(WaspElementTypes.MAP_LITERAL)
@@ -221,20 +213,17 @@ class WaspParser : PsiParser {
 
     private fun parseKeyValuePair(builder: PsiBuilder) {
         val marker = builder.mark()
-        
+
         // Parse key
         parseExpression(builder)
-        
-        // Parse colon
+
+        // Parse colon (optional - be permissive)
         if (builder.tokenType == Token.COLON) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected ':'")
+            // Parse value
+            parseExpression(builder)
         }
-        
-        // Parse value
-        parseExpression(builder)
-        
+
         marker.done(WaspElementTypes.KEY_VALUE_PAIR)
     }
 
@@ -251,10 +240,9 @@ class WaspParser : PsiParser {
             }
         }
 
+        // Consume closing paren if present (be permissive if missing)
         if (builder.tokenType == Token.RPAREN) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected ')'")
         }
 
         marker.done(WaspElementTypes.ARGUMENT_LIST)
@@ -308,27 +296,25 @@ class WaspParser : PsiParser {
 
     private fun parseArithmeticExpression(builder: PsiBuilder) {
         val marker = builder.mark()
-        
+
         // Parse the first operand
         parseNumberLiteral(builder)
-        
+
         // Parse operators and operands
-        while (!builder.eof() && 
-               builder.tokenType != Token.NEWLINE && 
+        while (!builder.eof() &&
+               builder.tokenType != Token.NEWLINE &&
                builder.tokenType == Token.OPERATOR) {
             builder.advanceLexer() // consume operator
-            
+
+            // Be permissive - try to parse what comes next
             when (builder.tokenType) {
                 Token.NUMBER -> parseNumberLiteral(builder)
                 Token.IDENTIFIER -> builder.advanceLexer()
                 Token.LPAREN -> parseBlock(builder, Token.RPAREN)
-                else -> {
-                    builder.error("Expected number, identifier, or parenthesized expression")
-                    break
-                }
+                else -> break // Stop on unexpected token
             }
         }
-        
+
         marker.done(WaspElementTypes.ARITHMETIC_EXPRESSION)
     }
 
@@ -344,7 +330,7 @@ class WaspParser : PsiParser {
 
     private fun parseBlock(builder: PsiBuilder, rparen: IElementType) {
         val marker = builder.mark()
-        builder.advanceLexer() // consume '{'
+        builder.advanceLexer() // consume opening token
 
         while (!builder.eof() && builder.tokenType != rparen) {
             when (builder.tokenType) {
@@ -354,10 +340,9 @@ class WaspParser : PsiParser {
             }
         }
 
+        // Consume closing token if present (be permissive if missing)
         if (builder.tokenType == rparen) {
             builder.advanceLexer()
-        } else {
-            builder.error("Expected " + symbol(rparen))
         }
 
         marker.done(WaspElementTypes.BLOCK)
