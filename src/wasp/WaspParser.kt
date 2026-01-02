@@ -36,7 +36,7 @@ class WaspParser : PsiParser {
             Token.LBRACKET -> parseArrayLiteral(builder)
             Token.LPAREN -> parseBlock(builder, Token.RPAREN)
             else -> {
-                builder.error("Unexpected token")
+                // Be permissive - consume the token without error
                 builder.advanceLexer()
             }
         }
@@ -53,18 +53,26 @@ class WaspParser : PsiParser {
             return
         }
 
-        // Parse the rest of the statement based on context
-        val type = builder.tokenType
+        // Parse the rest of the statement (condition/expression)
         while (!builder.eof() &&
-            type != Token.NEWLINE &&
-            type != Token.LBRACE
+            builder.tokenType != Token.NEWLINE &&
+            builder.tokenType != Token.LBRACE &&
+            builder.tokenType != Token.COLON
         ) {
             parseExpression(builder)
         }
 
-        if (type == Token.LBRACE) parseBlock(builder, Token.RBRACE)
-        if (type == Token.LPAREN) parseBlock(builder, Token.RPAREN)
-        if (type == Token.LBRACKET) parseBlock(builder, Token.RBRACKET)
+        // Handle different block starters
+        when (builder.tokenType) {
+            Token.LBRACE -> parseBlock(builder, Token.RBRACE)
+            Token.LPAREN -> parseBlock(builder, Token.RPAREN)
+            Token.LBRACKET -> parseBlock(builder, Token.RBRACKET)
+            Token.COLON -> {
+                builder.advanceLexer() // consume ':'
+                // Parse indented block (statements until dedent)
+                parseIndentedBlock(builder)
+            }
+        }
 
         marker.done(WaspElementTypes.KEYWORD_STATEMENT)
     }
@@ -78,16 +86,44 @@ class WaspParser : PsiParser {
             parseArgumentList(builder)
             marker.done(WaspElementTypes.FUNCTION_CALL)
         } else if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
-            // This is an assignment
-            builder.advanceLexer() // consume '='
-            parseExpression(builder)
+            // This is an assignment (possibly chained)
+            parseAssignmentChain(builder)
             marker.done(WaspElementTypes.ASSIGNMENT)
+        } else if (builder.tokenType == Token.NEWLINE || builder.eof()) {
+            // Standalone identifier (function call without parens)
+            marker.done(WaspElementTypes.IDENTIFIER_STATEMENT)
         } else {
             // Check for other expressions
             while (!builder.eof() && builder.tokenType != Token.NEWLINE) {
                 parseExpression(builder)
             }
             marker.done(WaspElementTypes.IDENTIFIER_STATEMENT)
+        }
+    }
+
+    private fun parseAssignmentChain(builder: PsiBuilder) {
+        // Handle chained assignments: x=y=z=value
+        while (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
+            builder.advanceLexer() // consume '='
+
+            // Check if next is another identifier followed by '='
+            if (builder.tokenType == Token.IDENTIFIER) {
+                val nextPos = builder.mark()
+                builder.advanceLexer()
+                if (builder.tokenType == Token.OPERATOR && builder.tokenText == "=") {
+                    nextPos.rollbackTo()
+                    // Continue with nested assignment
+                    val nestedMarker = builder.mark()
+                    builder.advanceLexer() // consume identifier
+                    parseAssignmentChain(builder)
+                    nestedMarker.done(WaspElementTypes.ASSIGNMENT)
+                } else {
+                    nextPos.rollbackTo()
+                    parseExpression(builder)
+                }
+            } else {
+                parseExpression(builder)
+            }
         }
     }
 
@@ -322,6 +358,44 @@ class WaspParser : PsiParser {
             builder.advanceLexer()
         } else {
             builder.error("Expected " + symbol(rparen))
+        }
+
+        marker.done(WaspElementTypes.BLOCK)
+    }
+
+    private fun parseIndentedBlock(builder: PsiBuilder) {
+        val marker = builder.mark()
+
+        // Skip newline after colon
+        if (builder.tokenType == Token.NEWLINE) {
+            builder.advanceLexer()
+        }
+
+        // Parse statements until we hit a non-indented line or EOF
+        // Since we don't track indentation in the lexer, we'll parse
+        // statements until we hit a dedent indicator or EOF
+        // For now, just parse statements on subsequent lines
+        var hasStatements = false
+        while (!builder.eof()) {
+            when (builder.tokenType) {
+                Token.NEWLINE -> {
+                    builder.advanceLexer()
+                    // Check if next line is dedented (starts with non-whitespace keyword/identifier at column 0)
+                    // For simplicity, we'll just continue parsing until we hit EOF or a clear dedent
+                }
+                Token.COMMENT -> builder.advanceLexer()
+                else -> {
+                    parseStatement(builder)
+                    hasStatements = true
+                    // After a statement, check for newline
+                    if (builder.tokenType == Token.NEWLINE) {
+                        continue
+                    } else {
+                        // No more statements in the indented block
+                        break
+                    }
+                }
+            }
         }
 
         marker.done(WaspElementTypes.BLOCK)
