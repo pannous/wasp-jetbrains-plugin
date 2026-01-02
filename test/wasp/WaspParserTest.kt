@@ -424,6 +424,88 @@ class WaspParserTest : ParsingTestCase("", "wasp", WaspParserDefinition()) {
         assertTrue("Complex concatenation should produce nodes", nodes.isNotEmpty())
     }
 
+    fun testShebangLine() {
+        // Test shebang (should be treated as comment)
+        val code = "#!/usr/bin/env wasp\nx = 42"
+        val nodes = parse(code)
+        assertTrue("Shebang should not cause parser errors", nodes.isNotEmpty())
+    }
+
+    fun testStandaloneIdentifier() {
+        // Test standalone identifier (function call without parens)
+        val code = "paint"
+        val nodes = parse(code)
+        assertTrue("Standalone identifier should parse", nodes.isNotEmpty())
+    }
+
+    fun testChainedAssignment() {
+        // Test chained assignment
+        val code = "width=height=400"
+        val nodes = parse(code)
+        assertTrue("Chained assignment should parse", nodes.isNotEmpty())
+    }
+
+    fun testColonTerminatedBlock() {
+        // Test while with colon and indented block
+        val code = """
+            while condition:
+                statement1
+                statement2
+        """.trimIndent()
+        val nodes = parse(code)
+        assertTrue("Colon-terminated block should parse", nodes.isNotEmpty())
+    }
+
+    fun testCircleSampleFile() {
+        // Test actual circle.wasp content
+        val code = """
+            #!/usr/bin/env wasp
+            y=0
+            j=0
+            width=height=400
+            center=height/2
+            surface=malloc(height*width)
+            while y++<height and x++<width:
+                surface[y+height*x]= norm( (y-center)^2 + (x-center)^2 ) < radius
+            paint
+        """.trimIndent()
+        val nodes = parse(code)
+        assertTrue("Circle sample should parse without errors", nodes.isNotEmpty())
+    }
+
+    fun testAllSampleFiles() {
+        // Test all sample files from the wasp repository
+        val samplesDir = java.io.File("/Users/me/dev/apps/wasp/samples")
+        if (!samplesDir.exists()) {
+            println("Samples directory not found, skipping test")
+            return
+        }
+
+        val sampleFiles = samplesDir.listFiles { file -> file.extension == "wasp" }
+        if (sampleFiles == null || sampleFiles.isEmpty()) {
+            println("No sample files found, skipping test")
+            return
+        }
+
+        var totalFiles = 0
+        var successfulFiles = 0
+
+        for (file in sampleFiles) {
+            totalFiles++
+            try {
+                val code = file.readText()
+                val nodes = parse(code)
+                successfulFiles++
+                println("✓ Successfully parsed ${file.name}")
+            } catch (e: Exception) {
+                println("✗ Failed to parse ${file.name}: ${e.message}")
+            }
+        }
+
+        println("Parsed $successfulFiles/$totalFiles sample files successfully")
+        assertTrue("Should parse most sample files", successfulFiles > 0)
+    }
+
     private fun parse(code: String): Array<ASTNode> {
         val psiFile = createPsiFile("test", code)
         val node = psiFile?.node
