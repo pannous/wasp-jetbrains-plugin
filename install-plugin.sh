@@ -1,62 +1,91 @@
 #!/bin/bash
 
+# Auto-install Wasp Plugin to all IntelliJ-based IDEs
+
 set -e
 
-# Configuration
-PLUGIN_NAME="wasp-jetbrains-plugin"
-BUILD_DIR="build/distributions"
-# Use the latest zip file in distributions (handles versioned names)
-PLUGIN_ZIP=$(ls -t ${BUILD_DIR}/${PLUGIN_NAME}-*.zip 2>/dev/null | head -1)
-
-# Determine which IDE to install to
-IDE="${1:-CLion}"
-
-# Find IDE config directory
-IDE_CONFIG=$(ls -d ~/Library/Application\ Support/JetBrains/${IDE}* 2>/dev/null | sort -V | tail -1)
-
-if [ -z "$IDE_CONFIG" ]; then
-    echo "$IDE config directory not found. Please run $IDE at least once to create the config directory."
-    echo "Looking for: ~/Library/Application Support/JetBrains/${IDE}*"
-    echo ""
-    echo "Usage: $0 [IDE_NAME]"
-    echo "  Default IDE: CLion"
-    echo "  Examples: $0 CLion"
-    echo "           $0 IntelliJIdea"
-    echo "           $0 PyCharm"
-    exit 1
-fi
-
-PLUGINS_DIR="${IDE_CONFIG}/plugins"
-
-echo "Found $IDE config: $IDE_CONFIG"
-echo "Plugins directory: $PLUGINS_DIR"
+echo "🚀 Installing Wasp Plugin..."
 
 # Build the plugin
-echo "Building plugin..."
-JAVA_HOME=/Users/me/Library/Java/JavaVirtualMachines/openjdk-21.0.1/Contents/Home ./gradlew buildPlugin --no-daemon
+./gradlew buildPlugin
 
-# Check if plugin was built
-if [ ! -f "$PLUGIN_ZIP" ]; then
-    echo "Error: Plugin build failed. Expected file: $PLUGIN_ZIP"
+# Find the built plugin (auto-detect latest version)
+PLUGIN_ZIP=$(ls -t build/distributions/wasp-jetbrains-plugin-*.zip 2>/dev/null | head -1)
+
+if [ -z "$PLUGIN_ZIP" ] || [ ! -f "$PLUGIN_ZIP" ]; then
+    echo "❌ Error: Plugin not found in build/distributions/"
+    echo "Build may have failed"
     exit 1
 fi
 
-# Create plugins directory if it doesn't exist
-mkdir -p "$PLUGINS_DIR"
+# Extract version from filename
+VERSION=$(basename "$PLUGIN_ZIP" | sed 's/wasp-jetbrains-plugin-//' | sed 's/.zip//')
+echo "✅ Plugin built successfully: $PLUGIN_ZIP (v$VERSION)"
 
-# Remove old version if exists
-OLD_PLUGIN="${PLUGINS_DIR}/${PLUGIN_NAME}"
-if [ -d "$OLD_PLUGIN" ]; then
-    echo "Removing old plugin version..."
-    rm -rf "$OLD_PLUGIN"
+# Auto-detect all JetBrains IDE installations
+JETBRAINS_BASE="$HOME/Library/Application Support/JetBrains"
+FOUND_DIRS=()
+
+if [ -d "$JETBRAINS_BASE" ]; then
+    # Find all IDE directories (IntelliJ, CLion, RustRover, etc.)
+    for ide_dir in "$JETBRAINS_BASE"/*; do
+        if [ -d "$ide_dir" ]; then
+            plugin_dir="$ide_dir/plugins"
+            # Check if this looks like a real IDE installation
+            if [ -d "$ide_dir" ]; then
+                FOUND_DIRS+=("$plugin_dir")
+            fi
+        fi
+    done
 fi
 
-# Extract plugin to plugins directory
-echo "Installing plugin to $PLUGINS_DIR..."
-unzip -q "$PLUGIN_ZIP" -d "$PLUGINS_DIR"
+if [ ${#FOUND_DIRS[@]} -eq 0 ]; then
+    echo "❌ No JetBrains IDE installations found"
+    echo "Plugin is available at: $PLUGIN_ZIP"
+    echo "Install manually via: Settings → Plugins → ⚙️ → Install Plugin from Disk"
+    exit 1
+fi
+
+echo "📦 Found ${#FOUND_DIRS[@]} JetBrains IDE installation(s)"
+
+# Install to each found IDE
+for plugin_dir in "${FOUND_DIRS[@]}"; do
+    ide_name=$(echo "$plugin_dir" | sed 's|.*/JetBrains/||' | sed 's|/plugins||')
+    echo "📥 Installing to $ide_name..."
+
+    # Create plugins directory if it doesn't exist
+    mkdir -p "$plugin_dir"
+
+    # Remove old installation if exists
+    if [ -d "$plugin_dir/wasp-jetbrains-plugin" ]; then
+        rm -rf "$plugin_dir/wasp-jetbrains-plugin"
+    fi
+
+    # Unzip plugin to plugins directory
+    unzip -q "$PLUGIN_ZIP" -d "$plugin_dir/"
+
+    echo "   ✅ Installed to $ide_name"
+done
 
 echo ""
-echo "✓ Plugin installed successfully!"
-echo "✓ Location: $PLUGINS_DIR/${PLUGIN_NAME}"
+echo "✨ Installation complete!"
 echo ""
-echo "Please restart $IDE to load the plugin."
+echo "🔄 Restarting IntelliJ IDEA..."
+
+# Kill IntelliJ IDEA to ensure plugin is loaded
+pkill -f "IntelliJ IDEA" 2>/dev/null || true
+sleep 2
+
+# Restart IntelliJ IDEA if it exists
+if [ -d "/Applications/IntelliJ IDEA.app" ]; then
+    echo "   Starting IntelliJ IDEA..."
+    open -a "IntelliJ IDEA" 2>/dev/null || echo "   ℹ️  IntelliJ IDEA failed to start"
+fi
+
+echo ""
+echo "📋 Plugin installed (v$VERSION)"
+echo "   Open any .wasp file to test"
+echo ""
+echo "To verify installation:"
+echo "   Settings → Plugins → Installed → search for 'Wasp'"
+echo ""
